@@ -32,6 +32,10 @@ The code is organized in three folders:
  Code has been tested using python=3.6.10, brian2=2.3, matplotlib=3.1.3, numpy=1.18.1, and scipy=1.4.1.
  
  
+## License
+This repository is licensed under the
+GNU General Public License v3.0 (see `LICENSE.txt` for details)
+ 
  
  [1]: Marcos Duarte, https://github.com/demotu/BMC
  
