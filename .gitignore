@@ -1,0 +1,6 @@
+*.npy
+*.png
+*.pdf
+*.pyc
+*.eps
+__pychache__/*
