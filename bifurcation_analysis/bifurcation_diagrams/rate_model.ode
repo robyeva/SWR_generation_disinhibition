@@ -1,0 +1,86 @@
+###
+### XPPAUT input file of
+### Rate Model for Sharp-Wave Ripples
+###
+
+### Model equations ###
+
+# Softplus function:
+spf(x,k,t) = ln(1 + exp(k*(x + t)))
+
+# Standard P equation:
+dp/dt = (-p + spf(wpp*p - wpb*b - wpa*a, kp, tp))/taup
+# P equation with B->P depression:
+# dp/dt = (-p + spf(wpp*p - wpb*b*e - wpa*a, kp, tp))/taup
+
+# Standard B equation:
+db/dt = (-b + spf(wbp*p - wbb*b - wba*a, kb, tb))/taub
+
+# Standard A equation with B->A depression:
+da/dt = (-a + spf(wap*p - wab*b*e - waa*a, ka, ta))/taua
+# A equation with P->A facilitation and fixed B->A efficacy:
+# da/dt = (-a + spf(wap*p*(1 + z) - wab*b*0.5 - waa*a, ka, ta))/taua
+
+### Initial Conditions ###
+
+# SWR initial condition:
+init p = 44, b = 92, a = 0
+
+# non-SWR initial condition:
+# init p = 0, b = 0, a = 12.5
+
+### Model parameters ###
+
+# Synaptic depression efficacy:
+param e = 0.5
+# Synaptic facilitation efficacy:
+param z = 0.0
+
+# Connection strengths [pA.s]:
+param wpp = 1.72
+param wpb = 1.24
+param wpa = 12.6
+
+param wbp = 8.86
+param wbb = 3.24
+param wba = 13.44
+
+param wap = 1.72
+param wab = 5.66
+param waa = 8.40
+
+# Activation function slope [1/pA]:
+param kp = 0.47
+param kb = 0.41
+param ka = 0.48
+
+# Activation function threshold [pA]:
+param tp = 131.66
+param tb = 131.96
+param ta = 131.09
+
+# Time constants [ms]:
+param taup = 3
+param taub = 2
+param taua = 6
+
+### XPPAUT internal parameters ###
+
+# XPP plot window:
+@ xplot=p, yplot=b
+@ xlo=0, xhi=100, ylo=0, yhi=100
+
+# AUTO plot window:
+@ autoymin=0, autoymax=200
+@ autoxmin=-0.1, autoxmax=1.1
+
+# AUTO parameter range:
+@ parmin=-0.1, parmax=1.1
+
+# AUTO step size:
+@ dsmax=0.05, ds=0.01
+
+# AUTO additional numerics:
+@ bound=10000, nmax=1000000, npr=10000
+
+done
