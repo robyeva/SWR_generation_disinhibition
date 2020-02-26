@@ -9,7 +9,7 @@ The code is organized in two folders:
 
 ### `Network_simulations`:
  - `run_spiking.py`: constructs the spiking network, runs network simulations and creates and Figures 2, 6-10, 2-1, 6-1.
- - `run_rate.py`: finds parameters to define the rate model and creates Figures 2-2 and 6-2. 
+ - `run_rate.py`: finds parameters to define the rate model and creates Figures 2-2 and 6-2.
  - `/helper_functions` folder: contains supporting functions:
     - `utils_spiking.py`: supporting functions to simulate, analyze, and plot results
     - `detect_peaks.py`: supporting function to detect peaks in spiking simulations [1]
@@ -41,7 +41,7 @@ The code is organized in two folders:
 
    - `svg_to_png.sh` script to convert *svg* diagram to *png* using **Inkscape** (must be run before *fig_rate_overview.py*)
 
-   - `model.py`, `params.py`, `aux.py`, `bifurcations.py`, and `nullclines.py` auxiliary python code used across different figures
+   - `helper_functions/`: `model.py`, `params.py`, `aux.py`, `bifurcations.py`, and `nullclines.py` auxiliary python code used across different figures
 
    - `fig_rate_overview.py` creates *fig_rate_overview.eps* (Fig 3)
 
