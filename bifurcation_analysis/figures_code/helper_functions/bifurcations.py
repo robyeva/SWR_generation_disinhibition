@@ -6,7 +6,7 @@ Functions used to plot bifurcation diagrams across figures.
 import numpy as np
 
 # Import additional code:
-import aux
+import helper_functions.aux as aux
 
 # Return column index to be read in AUTO .dat files:
 def get_index(name):

@@ -9,9 +9,9 @@ import numpy as np
 from scipy.optimize import fsolve
 
 # Import additional code:
-import model
-import params
-import aux
+import helper_functions.model as model
+import helper_functions.params as params
+import helper_functions.aux as aux
 
 # Plot nullcline:
 def plot_nullcline(ax,X,Y,dX,legend,legend_loc,box,font_size, line_width=2):

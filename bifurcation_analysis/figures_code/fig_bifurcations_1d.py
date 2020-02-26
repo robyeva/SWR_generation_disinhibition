@@ -9,8 +9,8 @@ import matplotlib.pyplot as plt
 from matplotlib import rc
 
 # Import additional code:
-import params
-import bifurcations as bif
+import helper_functions.params as params
+import helper_functions.bifurcations as bif
 
 # Get directory of current file:
 file_dir = os.path.dirname(os.path.abspath(__file__))

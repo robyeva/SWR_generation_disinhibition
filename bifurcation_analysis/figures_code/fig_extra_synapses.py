@@ -15,10 +15,10 @@ import matplotlib.pyplot as plt
 from matplotlib import rc
 
 # Import additional code:
-import bifurcations as bif
-import nullclines as nc
-import model
-import params
+import helper_functions.bifurcations as bif
+import helper_functions.nullclines as nc
+import helper_functions.model as model
+import helper_functions.params as params
 
 # Get directory of current file:
 file_dir = os.path.dirname(os.path.abspath(__file__))

@@ -17,9 +17,9 @@ import matplotlib.gridspec as gridspec
 from matplotlib import rc
 
 # Import additional code:
-import bifurcations as bif
-import params
-import model
+import helper_functions.bifurcations as bif
+import helper_functions.params as params
+import helper_functions.model as model
 
 # Get directory of current file:
 file_dir = os.path.dirname(os.path.abspath(__file__))
