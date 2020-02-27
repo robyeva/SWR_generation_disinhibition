@@ -61,7 +61,7 @@ The code is organized in two folders:
 - Run `python run_spiking.py` to generate spiking network and all plots of spiking network
 
 ### `Rate_model`:
-- Run `python run_rate.py` to generate rate network and all related plots.  *Note*: the rate model is an approximation of the spiking model. Thus, `run_rate.py` should be run after the creation of the spiking model.
+- Run `python run_rate.py` to generate rate network and all related plots.  *Note*: the rate model is an approximation of the spiking model. Thus, `run_rate.py` should be run after the creation of the spiking model (all scripts in `construct_spiking_model.py` and f-I curves calculation).
 
 
 ### `Bifurcation_analysis`:
