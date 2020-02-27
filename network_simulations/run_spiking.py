@@ -44,10 +44,21 @@ if __name__ == '__main__':
     simulate_extended_syn_depression(filename_spiking, fraction_stim=1.)
     fig_bistability_manuscript(filename_spiking)
 
+    # FIG 2-1 --> creates file _intermediate_fI.npz needed for the rate model definition
+    print('Simulating network for Fig. 2-1')
+    IF_curves_copied_neuron_ALLatonce(filename_spiking, excited_state=False)
+    IF_curves_copied_neuron_ALLatonce(filename_spiking, excited_state=True)
+    adds_on_fig_2(filename_spiking)
+
     # FIG 6
     print('Simulating network for Fig. 6')
     save_sim_all_current_for_fig(filename_spiking)
     figure_6(filename_spiking)
+
+    # FIG 6-1
+    print('Creating Fig. 6-1')
+    # uses sims created in Fig. 6
+    adds_on_fig_6(filename_spiking)
 
     # FIG 7
     print('Simulating network for Fig. 7')
@@ -59,15 +70,15 @@ if __name__ == '__main__':
     print('Simulating network for Fig. 8')
     long_spontaneous_simulations(filename_spiking, depressing_PB=True)
     # shorter sims are needed for plotting purposes - panel B with spikes
-    long_spontaneous_simulations(filename_spiking, save_spikes=True)
-    long_spontaneous_simulations(filename_spiking, save_spikes=True, depressing_PB=True)
+    long_spontaneous_simulations(filename_spiking, simtime_current=30*second, save_spikes=True)
+    long_spontaneous_simulations(filename_spiking, simtime_current=30*second, save_spikes=True, depressing_PB=True)
     compare_default_to_other_plasticities(filename_spiking, depr_compare=True)
     
     # FIG 9
     print('Simulating network for Fig. 9')
     simulate_PtoA_facilitation_spontaneous(filename_spiking)
     # shorter sims are needed for plotting purposes - panel B with spikes
-    simulate_PtoA_facilitation_spontaneous(filename_spiking, save_spikes=True)
+    simulate_PtoA_facilitation_spontaneous(filename_spiking, simtime_current=30*second, save_spikes=True)
     compare_default_to_other_plasticities(filename_spiking, depr_compare=False)
 
     # FIG 10
@@ -76,16 +87,8 @@ if __name__ == '__main__':
                                            eta_F=0.32, gab_fac_only=4.5, gba_fac_only=5.5)
     plot_facilitationPtoA_effects(filename_spiking)
 
-    # FIG 2-1 - creates file _intermediate_fI.npz
-    print('Simulating network for Fig. 2-1')
-    IF_curves_copied_neuron_ALLatonce(filename_spiking, excited_state=False)
-    IF_curves_copied_neuron_ALLatonce(filename_spiking, excited_state=True)
-    adds_on_fig_2(filename_spiking)
 
-    # FIG 6-1
-    print('Creating Fig. 6-1')
-    # uses sims created in Fig. 6
-    adds_on_fig_6(filename_spiking)
+
 
 
 
