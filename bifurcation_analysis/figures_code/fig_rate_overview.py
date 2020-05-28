@@ -25,6 +25,7 @@ import helper_functions.bifurcations as bif
 import helper_functions.nullclines as nc
 import helper_functions.model as model
 import helper_functions.params as params
+import helper_functions.aux_functions as aux
 
 # Get directory of current file:
 file_dir = os.path.dirname(os.path.abspath(__file__))
@@ -69,9 +70,9 @@ bmax = 120
 amax = 15
 
 # Calculate P-B nullcline, assuming A in steady-state:
-nPB1 = nc.calc_pseudo_nullcline('P','B',pmax,bmax,e,file_dir)
+nPB1 = nc.calc_pseudo_nullcline(model,params,aux,'P','B',pmax,bmax,e,file_dir)
 # Calculate P-A nullcline, assuming B in steady-state:
-nPA1 = nc.calc_pseudo_nullcline('P','A',pmax,amax,e,file_dir)
+nPA1 = nc.calc_pseudo_nullcline(model,params,aux,'P','A',pmax,amax,e,file_dir)
 
 # Axis ticks:
 p_ticks=[0,25,50]
@@ -83,8 +84,8 @@ ax_n11.set_title(r'\textbf{B}',loc='left',x=-0.01,y=1.02,fontsize=fonts)
 ax_n11.set_title('e = 0.4',loc='center',x=0.5,y=1.02,fontsize=fonts)
 
 # Plot pseudo_nullclines:
-nc.plot_pseudo_nullclines(ax_n11,nPB1,'lower right',p_ticks,[],b_ticks,b_ticks,'','B [1/s]',fonts)
-nc.plot_pseudo_nullclines(ax_n21,nPA1,'upper right',p_ticks,p_ticks,a_ticks,a_ticks,'P [1/s]','A [1/s]',fonts)
+nc.plot_pseudo_nullclines(ax_n11,aux,nPB1,'lower right',p_ticks,[],b_ticks,b_ticks,'','B [1/s]',fonts)
+nc.plot_pseudo_nullclines(ax_n21,aux,nPA1,'upper right',p_ticks,p_ticks,a_ticks,a_ticks,'P [1/s]','A [1/s]',fonts)
 
 '''
 C) Calculate and plot pseudo-nullclines for e=0.5
@@ -92,17 +93,17 @@ C) Calculate and plot pseudo-nullclines for e=0.5
 e=0.5
 
 # Calculate P-B nullcline, assuming A in steady-state:
-nPB2 = nc.calc_pseudo_nullcline('P','B',pmax,bmax,e,file_dir)
+nPB2 = nc.calc_pseudo_nullcline(model,params,aux,'P','B',pmax,bmax,e,file_dir)
 # Calculate P-A nullcline, assuming B in steady-state:
-nPA2 = nc.calc_pseudo_nullcline('P','A',pmax,amax,e,file_dir)
+nPA2 = nc.calc_pseudo_nullcline(model,params,aux,'P','A',pmax,amax,e,file_dir)
 
 # Subplot title:
 ax_n12.set_title(r'\textbf{C}',loc='left',x=-0.01,y=1.02,fontsize=fonts)
 ax_n12.set_title('e = 0.5',loc='center',x=0.5,y=1.02,fontsize=fonts)
 
 # Plot pseudo_nullclines:
-nc.plot_pseudo_nullclines(ax_n12,nPB2,'lower right',p_ticks,[],b_ticks,[],'','',fonts)
-nc.plot_pseudo_nullclines(ax_n22,nPA2,'upper right',p_ticks,p_ticks,a_ticks,[],'P [1/s]','',fonts)
+nc.plot_pseudo_nullclines(ax_n12,aux,nPB2,'lower right',p_ticks,[],b_ticks,[],'','',fonts)
+nc.plot_pseudo_nullclines(ax_n22,aux,nPA2,'upper right',p_ticks,p_ticks,a_ticks,[],'P [1/s]','',fonts)
 
 '''
 D) e bifurcation diagrams and nullcline
@@ -125,13 +126,13 @@ bs = bif.load_bifurcations(file_dir + '/../bifurcation_diagrams/1param/','e',0,1
 ax_b1.set_title(r'\textbf{D}',loc='left',x=-0.01,y=1.02,fontsize=fonts)
 
 # Plot e-P bifurcation diagram:
-bif.plot_bifurcation(ax_b1,bs,'P',[0,1],pmax,'',e_ticks,[],p_ticks,p_ticks,fonts,vlines=[0.4,0.5])
+bif.plot_bifurcation(ax_b1,aux,bs,'P',[0,1],pmax,'',e_ticks,[],p_ticks,p_ticks,fonts,vlines=[0.4,0.5])
 # Plot e-B bifurcation diagram:
-bif.plot_bifurcation(ax_b2,bs,'B',[0,1],bmax,'',e_ticks,[],b_ticks,b_ticks,fonts,vlines=[0.4,0.5],maxvline=0.86,ylabelpad=0)
+bif.plot_bifurcation(ax_b2,aux,bs,'B',[0,1],bmax,'',e_ticks,[],b_ticks,b_ticks,fonts,vlines=[0.4,0.5],maxvline=0.86,ylabelpad=0)
 # Plot e nullcline:
 nc.plot_nullcline(ax_b2,E,B,dE,'e nullcline','upper right',(1.08,1.08),fonts)
 # Plot e-A bifurcation diagram:
-bif.plot_bifurcation(ax_b3,bs,'A',[0,1],amax,'e',e_ticks,[0,'',0.5,'',1],a_ticks,a_ticks,fonts,vlines=[0.4,0.5])
+bif.plot_bifurcation(ax_b3,aux,bs,'A',[0,1],amax,'e',e_ticks,[0,'',0.5,'',1],a_ticks,a_ticks,fonts,vlines=[0.4,0.5])
 
 # Adjust space between subplots:
 plt.subplots_adjust(hspace = 0.25,wspace=0.20)

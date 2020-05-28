@@ -20,6 +20,7 @@ from matplotlib import rc
 import helper_functions.bifurcations as bif
 import helper_functions.params as params
 import helper_functions.model as model
+import helper_functions.aux_functions as aux
 
 # Get directory of current file:
 file_dir = os.path.dirname(os.path.abspath(__file__))
@@ -94,9 +95,9 @@ ax_req12.set_title(r'[P$\rightarrow$A] + [P$\rightarrow$B$\rightarrow$A] $<$ 0',
                    loc='center',x=0.5,y=1.05,fontsize=fonts,color=hatchcolor)
 
 # Plot 2D numerical bifurcation diagram:
-bif.plot_weight_bifs_2d(f,ax_req11, 'wap', 'wbp', True, 'd', params.w_ap, params.w_bp, w1min, w1max, w2min, w2max, xlabels, ylabels, fonts)
-bif.plot_weight_bifs_2d(f,ax_req12, 'wap', 'wab', True, 'd', params.w_ap, params.w_ab, w1min, w1max, w2min, w2max, xlabels, ylabels, fonts, ytext=False)
-bif.plot_weight_bifs_2d(f,ax_req13, 'wap', 'wbb', True, 'l', params.w_ap, params.w_bb, w1min, w1max, w2min, w2max, xlabels, ylabels, fonts, ytext=False)
+bif.plot_weight_bifs_2d(f,ax_req11, aux, 'wap', 'wbp', True, 'd', params.w_ap, params.w_bp, w1min, w1max, w2min, w2max, xlabels, ylabels, fonts)
+bif.plot_weight_bifs_2d(f,ax_req12, aux, 'wap', 'wab', True, 'd', params.w_ap, params.w_ab, w1min, w1max, w2min, w2max, xlabels, ylabels, fonts, ytext=False)
+bif.plot_weight_bifs_2d(f,ax_req13, aux, 'wap', 'wbb', True, 'l', params.w_ap, params.w_bb, w1min, w1max, w2min, w2max, xlabels, ylabels, fonts, ytext=False)
 
 # Plot region where where requirement is met in its linear approximation:
 req1_params = params.k_b, params.w_bp, params.w_ab, params.w_bb
@@ -120,9 +121,9 @@ ax_req22.set_title(r'[P$\rightarrow$B] + [P$\rightarrow$A$\rightarrow$B] $>$ 0',
                    loc='center',x=0.5,y=1.05,fontsize=fonts,color=hatchcolor)
 
 # Plot 2D numerical bifurcation diagram:
-bif.plot_weight_bifs_2d(f,ax_req21, 'wbp', 'wba', True, 'u', params.w_bp, params.w_ba, w1min, w1max, w2min, w2max, xlabels, ylabels, fonts)
-bif.plot_weight_bifs_2d(f,ax_req22, 'wbp', 'wap', True, 'u', params.w_bp, params.w_ap, w1min, w1max, w2min, w2max, xlabels, ylabels, fonts, ytext=False)
-bif.plot_weight_bifs_2d(f,ax_req23, 'wbp', 'waa', True, 'u', params.w_ba, params.w_aa, w1min, w1max, w2min, w2max, xlabels, ylabels, fonts, ytext=False)
+bif.plot_weight_bifs_2d(f,ax_req21, aux, 'wbp', 'wba', True, 'u', params.w_bp, params.w_ba, w1min, w1max, w2min, w2max, xlabels, ylabels, fonts)
+bif.plot_weight_bifs_2d(f,ax_req22, aux, 'wbp', 'wap', True, 'u', params.w_bp, params.w_ap, w1min, w1max, w2min, w2max, xlabels, ylabels, fonts, ytext=False)
+bif.plot_weight_bifs_2d(f,ax_req23, aux, 'wbp', 'waa', True, 'u', params.w_ba, params.w_aa, w1min, w1max, w2min, w2max, xlabels, ylabels, fonts, ytext=False)
 
 # Plot region where where requirement is met in its linear approximation:
 req2_params = params.k_a, params.w_ba, params.w_ap, params.w_aa
@@ -146,9 +147,9 @@ ax_req32.set_title(r'[B$\rightarrow$P] + [B$\rightarrow$A$\rightarrow$P] $>$ 0',
                    loc='center',x=0.5,y=1.05,fontsize=fonts,color=hatchcolor)
 
 # Plot 2D numerical bifurcation diagram:
-bif.plot_weight_bifs_2d(f,ax_req31, 'wpb', 'wpa', True, 'd', params.w_pb, params.w_pa, w1min, w1max, w2min, w2max, xlabels, ylabels, fonts)
-bif.plot_weight_bifs_2d(f,ax_req32, 'wpb', 'wab', True, 'd', params.w_pb, params.w_ab, w1min, w1max, w2min, w2max, xlabels, ylabels, fonts, ytext=False)
-bif.plot_weight_bifs_2d(f,ax_req33, 'wpb', 'waa', True, 'd', params.w_pb, params.w_aa, w1min, w1max, w2min, w2max, xlabels, ylabels, fonts, ytext=False)
+bif.plot_weight_bifs_2d(f,ax_req31, aux, 'wpb', 'wpa', True, 'd', params.w_pb, params.w_pa, w1min, w1max, w2min, w2max, xlabels, ylabels, fonts)
+bif.plot_weight_bifs_2d(f,ax_req32, aux, 'wpb', 'wab', True, 'd', params.w_pb, params.w_ab, w1min, w1max, w2min, w2max, xlabels, ylabels, fonts, ytext=False)
+bif.plot_weight_bifs_2d(f,ax_req33, aux, 'wpb', 'waa', True, 'd', params.w_pb, params.w_aa, w1min, w1max, w2min, w2max, xlabels, ylabels, fonts, ytext=False)
 
 # Plot region where where requirement is met in its linear approximation:
 req3_params = params.k_a, params.w_pa, params.w_ab, params.w_aa
@@ -172,9 +173,9 @@ ax_req42.set_title(r'[A$\rightarrow$P] + [A$\rightarrow$B$\rightarrow$P] $<$ 0',
                    loc='center',x=0.5,y=1.05,fontsize=fonts,color=hatchcolor)
 
 # Plot 2D numerical bifurcation diagram:
-bif.plot_weight_bifs_2d(f,ax_req41, 'wpa', 'wpb', True, 'u', params.w_pa, params.w_pb, w1min, w1max, w2min, w2max, xlabels, ylabels, fonts)
-bif.plot_weight_bifs_2d(f,ax_req42, 'wpa', 'wba', True, 'u', params.w_pa, params.w_ba, w1min, w1max, w2min, w2max, xlabels, ylabels, fonts, ytext=False)
-bif.plot_weight_bifs_2d(f,ax_req43, 'wpa', 'wbb', True, 'u', params.w_pa, params.w_bb, w1min, w1max, w2min, w2max, xlabels, ylabels, fonts, ytext=False)
+bif.plot_weight_bifs_2d(f,ax_req41, aux, 'wpa', 'wpb', True, 'u', params.w_pa, params.w_pb, w1min, w1max, w2min, w2max, xlabels, ylabels, fonts)
+bif.plot_weight_bifs_2d(f,ax_req42, aux, 'wpa', 'wba', True, 'u', params.w_pa, params.w_ba, w1min, w1max, w2min, w2max, xlabels, ylabels, fonts, ytext=False)
+bif.plot_weight_bifs_2d(f,ax_req43, aux, 'wpa', 'wbb', True, 'u', params.w_pa, params.w_bb, w1min, w1max, w2min, w2max, xlabels, ylabels, fonts, ytext=False)
 
 # Plot region where where requirement is met in its linear approximation:
 req4_params = params.k_b, params.w_pb, params.w_ba, params.w_bb
@@ -202,9 +203,9 @@ ax_afb.set_title(r'\textbf{F}',loc='left',x=-0.40,y=1.05,fontsize=fonts)
 ax_afa.set_title(r'\textbf{G}',loc='left',x=-0.40,y=1.05,fontsize=fonts)
 
 # Plot 2D numerical bifurcation diagram for P, B, and A:
-bif.plot_weight_bifs_2d(f,ax_afp, 'tp', 'kp', False, 'u', params.t_p, params.k_p, 0, 250, 0, 1, xlabels, ylabels, fonts)
-bif.plot_weight_bifs_2d(f,ax_afb, 'tb', 'kb', False, 'u', params.t_b, params.k_b, 0, 250, 0, 1, xlabels, ylabels, fonts)
-bif.plot_weight_bifs_2d(f,ax_afa, 'ta', 'ka', False, 'u', params.t_a, params.k_a, 0, 250, 0, 1, xlabels, ylabels, fonts)
+bif.plot_weight_bifs_2d(f,ax_afp, aux, 'tp', 'kp', False, 'u', params.t_p, params.k_p, 0, 250, 0, 1, xlabels, ylabels, fonts)
+bif.plot_weight_bifs_2d(f,ax_afb, aux, 'tb', 'kb', False, 'u', params.t_b, params.k_b, 0, 250, 0, 1, xlabels, ylabels, fonts)
+bif.plot_weight_bifs_2d(f,ax_afa, aux, 'ta', 'ka', False, 'u', params.t_a, params.k_a, 0, 250, 0, 1, xlabels, ylabels, fonts)
 
 # Adjust space between subplots:
 plt.subplots_adjust(hspace=1.5,wspace=0.10)

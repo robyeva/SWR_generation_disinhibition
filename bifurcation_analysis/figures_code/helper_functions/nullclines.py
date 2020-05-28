@@ -8,11 +8,6 @@ Functions used to calculate and plot nullclines across figures.
 import numpy as np
 from scipy.optimize import fsolve
 
-# Import additional code:
-import helper_functions.model as model
-import helper_functions.params as params
-import helper_functions.aux as aux
-
 # Plot nullcline:
 def plot_nullcline(ax,X,Y,dX,legend,legend_loc,box,font_size, line_width=2):
     c = ax.contour(X, Y, dX, levels=[0], linewidths=line_width, colors='gray')
@@ -20,13 +15,13 @@ def plot_nullcline(ax,X,Y,dX,legend,legend_loc,box,font_size, line_width=2):
     ax.legend([h[0]], [legend], frameon=False,loc=legend_loc, bbox_to_anchor=box, fontsize=font_size, handlelength=0.5, handletextpad=0.25)
 
 # Return population differential equation:
-def dpop(x):
+def dpop(model,x):
     if x == 0: return model.dp
     if x == 1: return model.db
     if x == 2: return model.da
 
 # Return parameters for dx/dt model equation:
-def pop_params(x):
+def pop_params(params,x):
     if x == 0:
         return params.w_pp, params.w_pb, params.w_pa,params.k_p, params.t_p, params.tau_p
     if x == 1:
@@ -46,7 +41,7 @@ def pop_number(pop):
     if pop == 'A': return 2
 
 # Calculate pseudo-nullcline (nullcline pop1-pop2 assuming pop3 is in steady-state):
-def calc_pseudo_nullcline(pop1, pop2, pop1max, pop2max, e, file_dir):
+def calc_pseudo_nullcline(model,params,aux,pop1, pop2, pop1max, pop2max, e, file_dir):
     # Attribute index {0,1,2} to each population:
     x1 = pop_number(pop1)
     x2 = pop_number(pop2)
@@ -61,9 +56,9 @@ def calc_pseudo_nullcline(pop1, pop2, pop1max, pop2max, e, file_dir):
     x3 = x[(x != x1) & (x != x2)].item(0)
 
     # Get differential equation for each population:
-    dx1 = dpop(x1)
-    dx2 = dpop(x2)
-    dx3 = dpop(x3)
+    dx1 = dpop(model,x1)
+    dx2 = dpop(model,x2)
+    dx3 = dpop(model,x3)
 
     # Name of file where calculaton will be saved:
     fname = file_dir + '/pseudo_nullclines/ncline_'+aux.pop_name(x1)+aux.pop_name(x2)+'_e=%.1lf'%e
@@ -83,11 +78,11 @@ def calc_pseudo_nullcline(pop1, pop2, pop1max, pop2max, e, file_dir):
         # Calculate steady-states of third population for each element in 2D grid:
         for i in range(X1.shape[0]):
             for j in range(X1.shape[1]):
-                X3[i, j] = fsolve(dx3, 0, order_pops(x1, x2, X1[i, j], X2[i, j], e, pop_params(x3)))
+                X3[i, j] = fsolve(dx3, 0, order_pops(x1, x2, X1[i, j], X2[i, j], e, pop_params(params,x3)))
 
         # Get nullclines with third population in steady-state:
-        dX1 = dx1(X1, *order_pops(x2, x3, X2, X3, e, pop_params(x1)))
-        dX2 = dx2(X2, *order_pops(x1, x3, X1, X3, e, pop_params(x2)))
+        dX1 = dx1(X1, *order_pops(x2, x3, X2, X3, e, pop_params(params,x1)))
+        dX2 = dx2(X2, *order_pops(x1, x3, X1, X3, e, pop_params(params,x2)))
 
         # Save results in a file:
         np.save(fname,(X1,X2,dX1,dX2))
@@ -95,7 +90,7 @@ def calc_pseudo_nullcline(pop1, pop2, pop1max, pop2max, e, file_dir):
     return e, X1, X2, dX1, dX2, pop1, pop2, aux.pop_name(x3)
 
 # Plot pseudo-nullclines:
-def plot_pseudo_nullclines(ax,nullcline,location,xticks,xticklabels,yticks,yticklabels,xlabel,ylabel,font_size,spine_width=0.75, line_width=2):
+def plot_pseudo_nullclines(ax,aux,nullcline,location,xticks,xticklabels,yticks,yticklabels,xlabel,ylabel,font_size,spine_width=0.75, line_width=2):
     e, X1, X2, dX1, dX2, pop1, pop2, pop3 = nullcline
 
     # Plot pseudo_nullclines:

@@ -19,6 +19,7 @@ import helper_functions.bifurcations as bif
 import helper_functions.nullclines as nc
 import helper_functions.model as model
 import helper_functions.params as params
+import helper_functions.aux_functions as aux
 
 # Get directory of current file:
 file_dir = os.path.dirname(os.path.abspath(__file__))
@@ -61,13 +62,13 @@ fig_width = 16.25/2.54
 fig, ax = plt.subplots(1,3,figsize=(fig_width,0.2*fig_width))
 
 # Plot e-P bifurcation diagram:
-bif.plot_bifurcation(ax[0],bs,'P',[0,1],pmax,'e',e_ticks,e_ticklabels,P_ticks,P_ticks,fonts)
+bif.plot_bifurcation(ax[0],aux,bs,'P',[0,1],pmax,'e',e_ticks,e_ticklabels,P_ticks,P_ticks,fonts)
 # Plot e-B bifurcation diagram:
-bif.plot_bifurcation(ax[1],bs,'B',[0,1],bmax,'e',e_ticks,e_ticklabels,B_ticks,B_ticks,fonts)
+bif.plot_bifurcation(ax[1],aux,bs,'B',[0,1],bmax,'e',e_ticks,e_ticklabels,B_ticks,B_ticks,fonts)
 # Plot e nullcline:
 nc.plot_nullcline(ax[1],E,B,dE,'e nullcline','upper right',(1.05,1.05),fonts)
 # Plot e-A bifurcation diagram:
-bif.plot_bifurcation(ax[2],bs,'A',[0,1],amax,'e',e_ticks,e_ticklabels,A_ticks,A_ticks,fonts)
+bif.plot_bifurcation(ax[2],aux,bs,'A',[0,1],amax,'e',e_ticks,e_ticklabels,A_ticks,A_ticks,fonts)
 
 # Adjust space between subplots:
 plt.subplots_adjust(wspace=0.4)
@@ -107,13 +108,13 @@ fig_width = 16.25/2.54
 fig, ax = plt.subplots(1,3,figsize=(fig_width,0.2*fig_width))
 
 # Plot z-P bifurcation diagram:
-bif.plot_bifurcation(ax[0],bs,'P',[0,1],pmax,'z',z_ticks,z_ticklabels,P_ticks,P_ticks,fonts)
+bif.plot_bifurcation(ax[0],aux,bs,'P',[0,1],pmax,'z',z_ticks,z_ticklabels,P_ticks,P_ticks,fonts)
 # Plot z nullcline:
 nc.plot_nullcline(ax[0],Z,P,dZ,'z nullcline','lower right',(1.05,0.0),fonts)
 # Plot z-B bifurcation diagram:
-bif.plot_bifurcation(ax[1],bs,'B',[0,1],bmax,'z',z_ticks,z_ticklabels,B_ticks,B_ticks,fonts)
+bif.plot_bifurcation(ax[1],aux,bs,'B',[0,1],bmax,'z',z_ticks,z_ticklabels,B_ticks,B_ticks,fonts)
 # Plot z-A bifurcation diagram:
-bif.plot_bifurcation(ax[2],bs,'A',[0,1],amax,'z',z_ticks,z_ticklabels,A_ticks,A_ticks,fonts)
+bif.plot_bifurcation(ax[2],aux,bs,'A',[0,1],amax,'z',z_ticks,z_ticklabels,A_ticks,A_ticks,fonts)
 
 # Adjust space between subplots:
 plt.subplots_adjust(wspace=0.4)

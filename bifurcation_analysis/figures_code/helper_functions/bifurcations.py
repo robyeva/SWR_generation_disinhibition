@@ -5,9 +5,6 @@ Functions used to plot bifurcation diagrams across figures.
 # Import python libraries:
 import numpy as np
 
-# Import additional code:
-import helper_functions.aux as aux
-
 # Return column index to be read in AUTO .dat files:
 def get_index(name):
     if name == 'P': return 9
@@ -34,18 +31,26 @@ def load_bifurcations(folder, param, pmin, pmax):
     return b1_stable, b1_unstable, b2_stable, b2_unstable
 
 # Plot all branches of bifurcation diagram:
-def plot_branches(ax, bs, name, line_width=2):
+def plot_branches(ax, aux, bs, name, plot_color='default', line_width=2):
+    # Set default color:
+    if (plot_color == 'default'):
+        plot_color = aux.pop_color(name)
+        
     b_stable = bs[0], bs[2]
     b_unstable = bs[1], bs[3]
     for bi in b_stable:
-        ax.plot(bi[:, 3], bi[:, get_index(name)], '-', c=aux.pop_color(name), linewidth=line_width)
+        ax.plot(bi[:, 3], bi[:, get_index(name)], '-', c=plot_color, linewidth=line_width)
     for bi in b_unstable:
-        ax.plot(bi[:, 3], bi[:, get_index(name)], '--', c=aux.pop_color(name), linewidth=line_width)
+        ax.plot(bi[:, 3], bi[:, get_index(name)], '--', c=plot_color, linewidth=line_width)
 
 # Plot and frame bifurcation diagram:
-def plot_bifurcation(ax,bs,name,xlim,ymax,xlabel,xticks,xticklabels,yticks,yticklabels,font_size,vlines=[],spine_width=0.75,line_width=2,maxvline=1,ylabelpad=2):
+def plot_bifurcation(ax,aux,bs,name,xlim,ymax,xlabel,xticks,xticklabels,yticks,yticklabels,font_size,plot_color='default',vlines=[],spine_width=0.75,line_width=2,maxvline=1,ylabelpad=2):
+    # Set default color:
+    if (plot_color == 'default'):
+        plot_color = aux.pop_color(name)
+
     # Plot all branches of bifurcation diagram:
-    plot_branches(ax,bs,name)
+    plot_branches(ax,aux,bs,name,plot_color)
 
     # Axes limits:
     ax.set_xlim(xlim)
@@ -71,7 +76,7 @@ def plot_bifurcation(ax,bs,name,xlim,ymax,xlabel,xticks,xticklabels,yticks,ytick
     for axis in ['bottom','left']: ax.spines[axis].set_linewidth(spine_width)
 
 # Plot bifurcation diagrams for P, B, and A w.r.t. a synaptic weight:
-def plot_weight_bifs_1d(i, j, ax, folder, w_name, w_val, pmin, pmax, xmax, ymax,font_size,spine_width=0.75, vlinemax=1):
+def plot_weight_bifs_1d(i, j, ax, aux, folder, w_name, w_val, pmin, pmax, xmax, ymax,font_size,spine_width=0.75, vlinemax=1):
     pop_names = ['P', 'B', 'A']
     bs = load_bifurcations(folder, w_name, pmin, pmax)
 
@@ -88,7 +93,7 @@ def plot_weight_bifs_1d(i, j, ax, folder, w_name, w_val, pmin, pmax, xmax, ymax,
 
     for k in range(3):
         # Plot all branches of bifurcation diagram:
-        plot_branches(ax[i+k,j], bs, pop_names[k], line_width=1.5)
+        plot_branches(ax[i+k,j], aux, bs, pop_names[k], line_width=1.5)
 
         # Set axes limits:
         ax[i+k, j].set_xlim([pmin, xmax])
@@ -120,7 +125,7 @@ def plot_weight_bifs_1d(i, j, ax, folder, w_name, w_val, pmin, pmax, xmax, ymax,
         if k == 0: ax[i+k, j].axvline(x=w_val, ymin=0, ymax=vlinemax, color='black', ls='--', lw=0.75)
 
 # Plot 2D bifurcation diagrams:
-def plot_weight_bifs_2d(folder, ax, p1, p2, invert, region, w1, w2, p1min, p1max, p2min, p2max, xlabels, ylabels, font_size, ytext = True, spine_width=0.75):
+def plot_weight_bifs_2d(folder, ax, aux, p1, p2, invert, region, w1, w2, p1min, p1max, p2min, p2max, xlabels, ylabels, font_size, ytext = True, spine_width=0.75):
     a = np.loadtxt(folder + 'auto_' + p1 + '_' + p2 + '.dat')
     # Plot w1 on y axis and w2 on x axis:
     if invert == True:

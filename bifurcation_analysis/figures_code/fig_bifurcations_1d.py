@@ -11,6 +11,7 @@ from matplotlib import rc
 # Import additional code:
 import helper_functions.params as params
 import helper_functions.bifurcations as bif
+import helper_functions.aux_functions as aux
 
 # Get directory of current file:
 file_dir = os.path.dirname(os.path.abspath(__file__))
@@ -36,25 +37,25 @@ f = file_dir + '/../bifurcation_diagrams/1param/'
 pmin=0; pmax=15
 
 # P->P bifurcation diagrams:
-bif.plot_weight_bifs_1d(0,0,ax,f,'wpp',params.w_pp,pmin,3.7,15,(75,120,15),fonts)
+bif.plot_weight_bifs_1d(0,0,ax,aux,f,'wpp',params.w_pp,pmin,3.7,15,(75,120,15),fonts)
 # B->P bifurcation diagrams:
-bif.plot_weight_bifs_1d(0,1,ax,f,'wpb',params.w_pb,pmin,pmax,15,(75,120,15),fonts)
+bif.plot_weight_bifs_1d(0,1,ax,aux,f,'wpb',params.w_pb,pmin,pmax,15,(75,120,15),fonts)
 # A->P bifurcation diagrams:
-bif.plot_weight_bifs_1d(0,2,ax,f,'wpa',params.w_pa,pmin,pmax,15,(75,120,15),fonts, vlinemax=0.70)
+bif.plot_weight_bifs_1d(0,2,ax,aux,f,'wpa',params.w_pa,pmin,pmax,15,(75,120,15),fonts, vlinemax=0.70)
 
 # P->B bifurcation diagrams:
-bif.plot_weight_bifs_1d(4,0,ax,f,'wbp',params.w_bp,pmin,pmax,15,(75,120,15),fonts)
+bif.plot_weight_bifs_1d(4,0,ax,aux,f,'wbp',params.w_bp,pmin,pmax,15,(75,120,15),fonts)
 # B->B bifurcation diagrams:
-bif.plot_weight_bifs_1d(4,1,ax,f,'wbb',params.w_bb,pmin,pmax,15,(75,120,15),fonts)
+bif.plot_weight_bifs_1d(4,1,ax,aux,f,'wbb',params.w_bb,pmin,pmax,15,(75,120,15),fonts)
 # A->B bifurcation diagrams:
-bif.plot_weight_bifs_1d(4,2,ax,f,'wba',params.w_ba,pmin,pmax,15,(75,120,15),fonts, vlinemax=0.70)
+bif.plot_weight_bifs_1d(4,2,ax,aux,f,'wba',params.w_ba,pmin,pmax,15,(75,120,15),fonts, vlinemax=0.70)
 
 # P->A bifurcation diagrams:
-bif.plot_weight_bifs_1d(8,0,ax,f,'wap',params.w_ap,pmin,pmax,15,(75,120,15),fonts)
+bif.plot_weight_bifs_1d(8,0,ax,aux,f,'wap',params.w_ap,pmin,pmax,15,(75,120,15),fonts)
 # B->A bifurcation diagrams:
-bif.plot_weight_bifs_1d(8,1,ax,f,'wab',params.w_ab,pmin,pmax,15,(75,120,15),fonts)
+bif.plot_weight_bifs_1d(8,1,ax,aux,f,'wab',params.w_ab,pmin,pmax,15,(75,120,15),fonts)
 # A->A bifurcation diagrams:
-bif.plot_weight_bifs_1d(8,2,ax,f,'waa',params.w_aa,pmin,pmax,15,(75,120,15),fonts)
+bif.plot_weight_bifs_1d(8,2,ax,aux,f,'waa',params.w_aa,pmin,pmax,15,(75,120,15),fonts)
 
 # Adjust space between subplots:
 plt.subplots_adjust(hspace=0.15,wspace=0.2)
