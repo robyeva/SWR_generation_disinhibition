@@ -463,29 +463,31 @@ def figure_7(filename, simtime_current=10 * 60 * second):
     IEI_end_start_FWHM_NEXT_evoked, IEI_end_start_FWHM_PREV_evoked, amp_evoked, durations_evoked, \
         t_evoked, trace_evoked, filt_trace_evoked = inside_analyze_evoked(info_dictionary_evoked, use_b_input=True)
 
-    figure(figsize=[14, 7])
-    my_size = 16
+    figure(figsize=[17.6/2.54, 0.5*17.6/2.54])
+    my_size = 9
     gs1 = gridspec.GridSpec(3, 12)
+    plt.rc('text.latex', preamble=r'\usepackage{cmbright}')
     plt.rc('text', usetex=True)
-    gs1.update(hspace=.6, wspace=2.)
+
+    gs1.update(hspace =.6, wspace=7)
 
     # ============= ****Spontaneous SWRs
     ax = subplot(gs1[0, 0:6])
     t_plot_start = np.argmin(np.abs(t_spont - 24))
     t_plot_end = np.argmin(np.abs(t_spont - 27))
-    plot(t_spont[t_plot_start:t_plot_end], trace_spont[t_plot_start:t_plot_end], 'k', lw=0.5, zorder=1)
+    plot(t_spont[t_plot_start:t_plot_end], trace_spont[t_plot_start:t_plot_end], 'k', lw=0.3, zorder=1)
     plot(t_spont[t_plot_start:t_plot_end], filt_trace[t_plot_start:t_plot_end], 'DodgerBlue', label='filtered',
-         lw=2.5, zorder=2)
+         lw=1.5, zorder=2)
     ylim(-5, 100)
-    ylabel('Filtered B input to P [pA]', fontsize=my_size)
+    ylabel('\n'.join(wrap('Filtered $B$ input to $P$ [pA]', 18)), fontsize=my_size)
     my_xlim = [t_spont[t_plot_start], t_spont[t_plot_end]]
     title('Spontaneous', fontsize=my_size)
     adjust_yaxis(ax, my_size)
+    plt.setp(ax.get_yticklabels()[0::2], visible=False)
     adjust_xaxis(ax, my_xlim, my_size)
 
     ob = AnchoredHScaleBar(size=0.2, label="200 ms", loc=1, frameon=False, extent=0,
-                           pad=0.5, sep=4., color="Black",
-                           borderpad=-1)
+                           pad=0.5, sep=4., color="Black", borderpad=-1, my_size=my_size)
     ax.add_artist(ob)
 
     # ================ SWR properties
@@ -500,6 +502,7 @@ def figure_7(filename, simtime_current=10 * 60 * second):
         adjust_xaxis(ax, None, my_size, show_bottom=True)
         title(my_label, fontsize=my_size)
         if my_label == 'Amplitude [pA]':
+            ax.set_yticks([0, 0.08, 0.16])
             xlim([0, 100])
             ax.set_xticks([0, 50, 100])
         elif my_label == 'FWHM [ms]':
@@ -508,6 +511,7 @@ def figure_7(filename, simtime_current=10 * 60 * second):
             ax.set_xticks([0, 60, 120])
             ax.set_yticks([0, 0.1, 0.2])
         else:
+            ylabel('\n'.join(wrap('Prob. density [a.u.]', 15)), fontsize=my_size)
             xlim([0, 2.5])
             ax.set_xticks([0, 1, 2])
             ylim([0, 2.5])
@@ -516,10 +520,10 @@ def figure_7(filename, simtime_current=10 * 60 * second):
     # ================ Correlation spontaneous SWR events - IEI
     ax = subplot(gs1[2, 0:3])
     plt.scatter(IEI_end_start_FWHM, amp_peaks[1:], facecolor='k',
-                edgecolor='face', alpha=0.3)
-    plt.axvline(x=0.17, linewidth=1.5, color='BlueViolet', linestyle='--')
+                s=2)
+    plt.axvline(x=0.188, linewidth=1, color='k', linestyle='--')
     xlabel('Previous IEI [sec]', fontsize=my_size)
-    ylabel('\n'.join(wrap('Event amplitude [pA]', 40)), fontsize=my_size)
+    ylabel('\n'.join(wrap('Amplitude [pA]', 15)), fontsize=my_size)
     c, p = pearsonr(IEI_end_start_FWHM, amp_peaks[1:])
     adjust_axes_spont(ax, c, p, my_size)
     xlim([0, 2.2])
@@ -529,14 +533,13 @@ def figure_7(filename, simtime_current=10 * 60 * second):
 
     popt, pcov = curve_fit(fit_func, IEI_end_start_FWHM, amp_peaks[1:], bounds=(0, [100, 100, 100]))
     aux_xaxis = np.arange(np.min(IEI_end_start_FWHM), np.max(IEI_end_start_FWHM), 0.05)
-    plt.plot(aux_xaxis, fit_func(aux_xaxis, *popt), 'r', lw=2.,
+    plt.plot(aux_xaxis, fit_func(aux_xaxis, *popt), 'r', lw=1.5,
              label='fit: a=%5.3f, b=%5.3f, c=%5.3f' % tuple(popt))
     print('Fitted time constant spont:', 1. / popt[1] * 1e3, ' ms')
 
     ax = subplot(gs1[2, 3:6])
     plt.scatter(IEI_end_start_FWHM, amp_peaks[:-1], facecolor='k',
-                edgecolor='k', alpha=0.3)
-    ylabel('Event amplitude [pA]', fontsize=my_size)
+             edgecolor='k', s = 2)
     xlabel('Next IEI [sec]', fontsize=my_size)
     c, p = pearsonr(IEI_end_start_FWHM, amp_peaks[:-1])
     adjust_axes_spont(ax, c, p, my_size)
@@ -561,8 +564,8 @@ def figure_7(filename, simtime_current=10 * 60 * second):
     start_idx = (np.abs(t_evoked - t_st)).argmin()
     end_idx = (np.abs(t_evoked - t_end)).argmin()
     my_lim = [t_evoked[start_idx], t_evoked[end_idx]]
-    plot(t_evoked[start_idx:end_idx], trace_evoked[start_idx:end_idx], 'k', lw=0.5, label='filtered', zorder=1)
-    plot(t_evoked[start_idx:end_idx], filt_trace_evoked[start_idx:end_idx], 'DodgerBlue', label='filtered', lw=2.5,
+    plot(t_evoked[start_idx:end_idx], trace_evoked[start_idx:end_idx], 'k', lw=0.3, label='filtered', zorder=1)
+    plot(t_evoked[start_idx:end_idx], filt_trace_evoked[start_idx:end_idx], 'DodgerBlue', label='filtered', lw=1.5,
          zorder=2)
     ylim(-5, 100)
 
@@ -572,15 +575,16 @@ def figure_7(filename, simtime_current=10 * 60 * second):
             iy = np.linspace(500, 500)
             verts = [(el, -500)] + list(zip(ix, iy)) + [
                 ((el + curr_duration), -500)]
-            poly = Polygon(verts, facecolor='#d4b021', edgecolor='#d4b021', alpha=0.3, zorder=3)
+            poly = Polygon(verts, facecolor='#d4b021', edgecolor='#d4b021', zorder=-3)
             ax.add_patch(poly)
-            ax.annotate("", xy=(el, 0.0), xytext=(el, -20.), xycoords='data',
-                        arrowprops=dict(arrowstyle="->", lw=2.))
+            ax.annotate("", xy=(el, 0.0), xytext=(el, -30.), xycoords='data',
+                        arrowprops=dict(arrowstyle="->", lw=1.))
 
     adjust_yaxis(ax, my_size)
     adjust_xaxis(ax, my_lim, my_size, show_bottom=False)
+    plt.setp(ax.get_yticklabels()[0::2], visible=False)
     ob = AnchoredHScaleBar(size=0.2, label="200 ms", loc=1, frameon=False, extent=0,
-                           pad=0.5, sep=4., color="Black", borderpad=-1)
+                           pad=0.5, sep=4., color="Black", borderpad=-1, my_size=my_size)
 
     ax.add_artist(ob)
     title('Evoked', fontsize=my_size)
@@ -600,6 +604,7 @@ def figure_7(filename, simtime_current=10 * 60 * second):
         title(my_label, fontsize=my_size)
         if my_label == 'Amplitude [pA]':
             xlim([0, 100])
+            ax.set_yticks([0, 0.08])
             ax.set_xticks([0, 50, 100])
         elif my_label == 'FWHM [ms]':
             xlim([0, 135])
@@ -615,10 +620,10 @@ def figure_7(filename, simtime_current=10 * 60 * second):
     # ================= Correlation of evoked SWR amplitude - IEI
     ax = subplot(gs1[2, 6:9])
     scatter(IEI_end_start_FWHM_NEXT_evoked, amp_evoked, facecolor='k',
-            edgecolor='k', alpha=0.3)
-    plt.axvline(x=0.065, linewidth=1.5, color='BlueViolet', linestyle='--')
+            s=2)
+    plt.axvline(x=0.082, linewidth=1, color='k', linestyle='--')
     xlabel('Previous IEI [sec]', fontsize=my_size)
-    ylabel('\n'.join(wrap('Event amplitude [pA]', 40)), fontsize=my_size)
+    ylabel('\n'.join(wrap('Amplitude [pA]', 40)), fontsize=my_size)
     c, p = pearsonr(IEI_end_start_FWHM_NEXT_evoked, amp_evoked)
     adjust_axes_spont(ax, c, p, my_size)
     ylim([40, 80])
@@ -628,14 +633,13 @@ def figure_7(filename, simtime_current=10 * 60 * second):
 
     popt, pcov = curve_fit(fit_func, IEI_end_start_FWHM_NEXT_evoked, amp_evoked, bounds=(0, [100, 100, 100]))
     aux_xaxis = np.arange(np.min(IEI_end_start_FWHM_NEXT_evoked), np.max(IEI_end_start_FWHM_NEXT_evoked), 0.05)
-    plt.plot(aux_xaxis, fit_func(aux_xaxis, *popt), 'r', lw=2.,
+    plt.plot(aux_xaxis, fit_func(aux_xaxis, *popt), 'r', lw=1.5,
              label='fit: a=%5.3f, b=%5.3f, c=%5.3f' % tuple(popt))
     print('Fitted time constant evoked:', 1. / popt[1] * 1e3, ' ms')
 
     ax = subplot(gs1[2, 9:])
     scatter(IEI_end_start_FWHM_PREV_evoked, amp_evoked, facecolor='k',
-            edgecolor='k', alpha=0.3)
-    ylabel('Event amplitude [pA]', fontsize=my_size)
+            edgecolor='k', s=2)
     xlabel('\n'.join(wrap('Next IEI [sec]', 16)), fontsize=my_size)
     c, p = pearsonr(amp_evoked, IEI_end_start_FWHM_PREV_evoked)
     adjust_axes_spont(ax, c, p, my_size)
@@ -760,36 +764,39 @@ def compare_default_to_other_plasticities(filename, simtime_current=10*60*second
     # plot(filt_short_depr)
     # show()
 
-    fig = figure(figsize=[10, 12])
-    my_size = 13
+    fig = plt.figure(figsize=[17.6 / 2.54, 1.2 * 17.6 / 2.54])
+    my_size = 9
+    plt.rc('text.latex', preamble=r'\usepackage{cmbright}')
+    plt.rc('text', usetex=True)
     gs1 = gridspec.GridSpec(5, 6, height_ratios=[1, 1, 1, 1, 1])
     gs2 = gridspec.GridSpecFromSubplotSpec(2, 6, subplot_spec=gs1[1:3, :], hspace=0.0, wspace=0.8)
     gs3 = gridspec.GridSpecFromSubplotSpec(2, 6, subplot_spec=gs1[3:, :], hspace=0.3, wspace=0.8)
 
-    plt.rc('text', usetex=True)
     gs1.update(hspace=.3, wspace=.8)
     ax = subplot(gs1[0, 0:6])
     range_around_peak = int(30000 / compress_step_indices)
     peak_distance = t_short[idx_peaks_short[which_peak]] - t_short_change[idx_peaks_short_change[which_peak]]
 
     if depr_compare:
-        my_lab_added = 'with B-to-P depression added'
+        my_lab_added = 'with $B$-to-$P$ depression added'
     else:
-        my_lab_added = 'with P-to-A facilitation added'
+        my_lab_added = 'with $P$-to-$A$ facilitation added'
     plot(t_short_change[idx_peaks_short_change[which_peak] - range_around_peak:idx_peaks_short_change[which_peak] +
-                                                                               range_around_peak] + peak_distance,
+                                                                              range_around_peak] + peak_distance,
          filt_short_depr[idx_peaks_short_change[which_peak] - range_around_peak:idx_peaks_short_change[which_peak] +
-                                                                                range_around_peak],
-         color=color_change, label=my_lab_added, lw=2.5, zorder=2)
+                                                                               range_around_peak],
+         color=color_change, label=my_lab_added, lw=1.5, zorder=2)
     plot(t_short[idx_peaks_short[which_peak] - range_around_peak:idx_peaks_short[which_peak] + range_around_peak],
          filt_short[idx_peaks_short[which_peak] - range_around_peak:idx_peaks_short[which_peak] + range_around_peak:],
-         'k', label='default', lw=2.5, zorder=2)
+         'k', label='default', lw=1.5, zorder=2)
     my_xlim = [t_short[idx_peaks_short[which_peak]] - 2, t_short[idx_peaks_short[which_peak]] + 2]
     ylim(-5, 120)
-    ylabel('\n'.join(wrap('Filtered B input to P [pA]', 17)), fontsize=my_size)  # or should it be pA
-    legend(loc='upper left', prop={'size': my_size - 2}, frameon=False)
+    ylabel('\n'.join(wrap('Filtered $B$ input to $P$ [pA]', 17)), fontsize=my_size)  # or should it be pA
+    legend(loc='upper left', prop={'size': my_size}, frameon=False)
+    plt.setp(ax.get_yticklabels()[::2], visible=False)
 
-    rect = patches.Rectangle((t_short[idx_peaks_short[which_peak]] - 0.15, -2), 0.3, 80, linewidth=2,
+    # Create a Rectangle patch
+    rect = patches.Rectangle((t_short[idx_peaks_short[which_peak]] - 0.15, -2), 0.3, 80, linewidth=1,
                              linestyle='--', edgecolor='DarkGray', facecolor='none')
     ax.add_patch(rect)
 
@@ -811,12 +818,12 @@ def compare_default_to_other_plasticities(filename, simtime_current=10*60*second
 
     for fr_disp, fr_disp_depr, my_title, subn, max_rec in zip([FRP_short, FRB_short, FRA_short],
                                                               [FRP_short_change, FRB_short_change, FRA_short_change],
-                                                              ['P cells', 'B cells', 'A cells'], [0, 2, 4],
+                                                              ['$P$ cells', '$B$ cells', '$A$ cells'], [0, 2, 4],
                                                               [130, 220, 28]):
         ax = subplot(gs2[0, subn:subn + 2])
-        plot(fr_disp[x1:x2], 'k', lw=2)
-        plot(fr_disp_depr[x3:x4], color=color_change, lw=2)
-        title(my_title)
+        plot(fr_disp[x1:x2], 'k', lw=1.3)
+        plot(fr_disp_depr[x3:x4], color=color_change, lw=1.)
+        title(my_title, fontsize=my_size)
         adjust_yaxis(ax, my_size)
         if subn == 4:
             ylim([-0.2, max_rec + 1])
@@ -825,16 +832,16 @@ def compare_default_to_other_plasticities(filename, simtime_current=10*60*second
         adjust_xaxis(ax, [0, 400], my_size)
         if subn == 0:
             ylabel('\n'.join(wrap('Pop. firing rate [spikes/s]', 20)), fontsize=my_size)
-        ob = AnchoredHScaleBar(size=50, label="50 ms", loc=1, frameon=False, extent=0,
-                               pad=1., sep=4., color="Black",
-                               borderpad=1.2)
+        ob = AnchoredHScaleBar(size=50, label="50 ms", loc=2, frameon=False, extent=0,
+                               pad=0.5, sep=4., color="Black",
+                               borderpad=0.5)
         ax.add_artist(ob)
 
-        rect = patches.Rectangle((50, -0.2), 300, max_rec, linewidth=2, linestyle='--', edgecolor='DarkGray',
+        rect = patches.Rectangle((50, -0.2), 300, max_rec, linewidth=1, linestyle='--', edgecolor='DarkGray',
                                  facecolor='none')
         ax.add_patch(rect)
 
-    for subn, dic_key, pop_size, mark_size in zip([0, 2, 4], ['P', 'B', 'A'], [8200, 135, 50], [0.4, 0.45, 0.55]):
+    for subn, dic_key, pop_size, mark_size in zip([0, 2, 4], ['P', 'B', 'A'], [8200, 135, 50], [0.15, 0.2, 0.25]):
         ax = subplot(gs2[1, subn:subn + 2])
         ip, tp = spikes_short[dic_key]
         il = np.where(np.logical_and(tp > t_short[x1], tp < t_short[x2]))[0]
@@ -854,10 +861,10 @@ def compare_default_to_other_plasticities(filename, simtime_current=10*60*second
         plt.axis('off')
 
     if depr_compare:
-        fig.text(0.1, 0.545, '\n'.join(wrap('with B-to-P depression added', 12)), va='center', ha='right', fontsize=my_size,
+        fig.text(0.1, 0.545, '\n'.join(wrap('with $B$-to-$P$ depression added', 15)), va='center', ha='right', fontsize=my_size,
                  color=color_change)
     else:
-        fig.text(0.1, 0.545, '\n'.join(wrap('with P-to-A facilitation added', 12)), va='center', ha='right', fontsize=my_size,
+        fig.text(0.1, 0.545, '\n'.join(wrap('with $P$-to-$A$ facilitation added', 15)), va='center', ha='right', fontsize=my_size,
                  color=color_change)
 
     fig.text(0.1, 0.49, 'default', va='center', ha='right', fontsize=my_size)
@@ -870,7 +877,7 @@ def compare_default_to_other_plasticities(filename, simtime_current=10*60*second
                                                                  durations_spont_change],
                                                                 ['IEI [sec]', 'Amplitude ' + unit_amp, 'FWHM [ms]']):
         ax = subplot(sub_n)
-        plt.hist([my_data_default, my_data_change], bins=30, color=['k', color_change], density=True, alpha=0.8)
+        plt.hist([my_data_default, my_data_change], color=['k', color_change], bins=30, lw=0, normed=True)
         adjust_yaxis(ax, my_size)
         ax.set_xticks(ax.get_xticks()[::2])
         ax.set_yticks(ax.get_yticks()[::2])
@@ -879,11 +886,13 @@ def compare_default_to_other_plasticities(filename, simtime_current=10*60*second
         if my_label.find('Amplitude') != -1:
             if depr_compare:
                 xlim([40, 80])
+                ax.set_yticks([0, 0.08, 0.16])
             else:
                 xlim([0, 100])
             ax.set_xticks([0,50,100])
         elif my_label.find('FWHM') != -1:
             ax.set_xticks([0, 60, 120])
+            ax.set_yticks([0, 0.4, 0.8])
         else:
             if depr_compare:
                 xlim([0, 2.5])
@@ -891,51 +900,60 @@ def compare_default_to_other_plasticities(filename, simtime_current=10*60*second
             else:
                 xlim([0, 4])
                 ax.set_xticks([0, 1, 2, 3, 4])
+                ax.set_yticks([0, 0.8, 1.6])
             ylabel('Prob. density [a. u.]', fontsize=my_size)
 
     # ================ correlation spontaneous events
     ax = subplot(gs3[1, 0:3])
-    plt.scatter(IEI_end_start_FWHM, amp_peaks[1:], facecolor='DarkGray',
-                edgecolor='k', alpha=0.3, rasterized=True)
-    plt.scatter(IEI_end_start_FWHM_change, amp_peaks_change[1:], facecolor=light_change,
-                edgecolor=color_change, alpha=0.3, rasterized=True)
+    plt.scatter(IEI_end_start_FWHM, amp_peaks[1:], facecolor='k',
+                edgecolor='k', s=2, rasterized=True)
+    plt.scatter(IEI_end_start_FWHM_change, amp_peaks_change[1:], facecolor=color_change,
+                edgecolor=color_change, s=2, rasterized=True)
     xlabel('Previous IEI [sec]', fontsize=my_size)
-    ylabel('\n'.join(wrap('Event amplitude ' + unit_amp, 40)), fontsize=my_size)
+    ylabel('\n'.join(wrap('Amplitude ' + unit_amp, 40)), fontsize=my_size)
     c, p = pearsonr(IEI_end_start_FWHM, amp_peaks[1:])  # of default
     adjust_axes_spont(ax, c, p, my_size)
+    plt.axvline(x=0.188, linewidth=1., color='k', linestyle='-.')
+
     if depr_compare:
+        plt.axvline(x=0.142, linewidth=1., color=color_change, linestyle='--')
         xlim([0, 2.5])
         xticks([0, 1, 2])
+        ylim([20, 80])
+
     else:
+        plt.axvline(x=0.209, linewidth=1., color=color_change, linestyle='--')
         xlim([0, 4])
         xticks([0, 2, 4])
         ylim([40, 80])
     yticks([40, 80])
 
+
     popt, pcov = curve_fit(fit_func, IEI_end_start_FWHM, amp_peaks[1:], bounds=(0, [100, 100, 100]))
     aux_xaxis = np.arange(np.min(IEI_end_start_FWHM), np.max(IEI_end_start_FWHM), 0.05)
-    plt.plot(aux_xaxis, fit_func(aux_xaxis, *popt), 'k', lw=2.,
+    plt.plot(aux_xaxis, fit_func(aux_xaxis, *popt), 'k', lw=1.5,
              label='fit: a=%5.3f, b=%5.3f, c=%5.3f' % tuple(popt))
     print('Fitted time constant spont:', 1. / popt[1] * 1e3, ' ms')
 
     popt, pcov = curve_fit(fit_func, IEI_end_start_FWHM_change, amp_peaks_change[1:], bounds=(0, [100, 100, 100]))
     aux_xaxis = np.arange(np.min(IEI_end_start_FWHM_change), np.max(IEI_end_start_FWHM_change), 0.05)
-    plt.plot(aux_xaxis, fit_func(aux_xaxis, *popt), color=color_change, lw=2.,
+    plt.plot(aux_xaxis, fit_func(aux_xaxis, *popt), color=light_change, lw=1.5,
              label='fit: a=%5.3f, b=%5.3f, c=%5.3f' % tuple(popt))
     print('Fitted time constant plastic:', 1. / popt[1] * 1e3, ' ms')
 
     ax = subplot(gs3[1, 3:6])
-    plt.scatter(IEI_end_start_FWHM, amp_peaks[:-1], facecolor='DarkGray',
-                edgecolor='k', alpha=0.3, rasterized=True)
-    plt.scatter(IEI_end_start_FWHM_change, amp_peaks_change[:-1], facecolor=light_change,
-                edgecolor=color_change, alpha=0.3, rasterized=True)
-    ylabel('Event amplitude ' + unit_amp, fontsize=my_size)
+    plt.scatter(IEI_end_start_FWHM, amp_peaks[:-1], facecolor='k',
+                edgecolor='k', s = 2, rasterized=True)  # amplitude of previous event - both works
+    plt.scatter(IEI_end_start_FWHM_change, amp_peaks_change[:-1], facecolor=color_change,
+                edgecolor=color_change, s=2, rasterized=True)  # amplitude of previous event - both works
+    ylabel('Amplitude ' + unit_amp, fontsize=my_size)
     xlabel('Next IEI [sec]', fontsize=my_size)
     c, p = pearsonr(IEI_end_start_FWHM, amp_peaks[:-1])
     adjust_axes_spont(ax, c, p, my_size)
     if depr_compare:
         xlim([0, 2.5])
         xticks([0, 1, 2])
+        ylim([20, 80])
     else:
         xlim([0, 4])
         xticks([0, 2, 4])
@@ -999,10 +1017,11 @@ def plot_facilitationPtoA_effects(filename, simtime_current=10 * 60 * second, t_
     IEI_end_start_FWHM_fac, amp_peaks_fac, durations_spont_fac, t_spont_fac, trace_spont_fac, \
     filt_trace_fac = inside_analyze_spont(info_dictionary_fac, use_b_input=True, detection_thr=40, min_dist_idx=2000)
 
-    fig = figure(figsize=[10, 9])
-    my_size = 14
-    gs1 = gridspec.GridSpec(4, 6)
+    fig = plt.figure(figsize=[17.6 / 2.54, 0.9 * 17.6 / 2.54])
+    my_size = 9
+    plt.rc('text.latex', preamble=r'\usepackage{cmbright}')
     plt.rc('text', usetex=True)
+    gs1 = gridspec.GridSpec(4, 6)
     gs1.update(hspace=.3, wspace=1.5)
     ax = subplot(gs1[0, 0:6])
     t_plot_start = np.argmin(np.abs(t_spont - 236))
@@ -1010,7 +1029,7 @@ def plot_facilitationPtoA_effects(filename, simtime_current=10 * 60 * second, t_
 
     plot(info_dictionary['time_array'], -info_dictionary['mean_b_input_to_p'], 'Gray')
     plot(t_spont[t_plot_start:t_plot_end], filt_trace[t_plot_start:t_plot_end], 'k', label='filtered',
-         lw=2.5, zorder=2)
+         lw=1.5, zorder=2)
     ylim(-5, 80)
     my_xlim = [t_spont[t_plot_start], t_spont[t_plot_end]]
     title('Default', fontsize=my_size)
@@ -1028,14 +1047,14 @@ def plot_facilitationPtoA_effects(filename, simtime_current=10 * 60 * second, t_
     plot(info_dictionary_fac['time_array'], -info_dictionary_fac['mean_b_input_to_p'], 'Gray')
     plot(t_spont_fac[t_plot_start:t_plot_end], filt_trace_fac[t_plot_start:t_plot_end], 'DarkMagenta',
          label='filtered with fac only',
-         lw=2.5, zorder=2)
+         lw=1.5, zorder=2)
     ylim(-5, 80)
-    fig.text(0.085, 0.7, 'Filtered B input to P [pA]', va='center', ha='center', rotation='vertical',
-             fontsize=my_size)
+    fig.text(0.075, 0.7, 'Filtered $B$ input to $P$ [pA]', va='center', ha='center', rotation='vertical',
+        fontsize=my_size)
     my_xlim = [t_spont[t_plot_start], t_spont[t_plot_end]]
     adjust_yaxis(ax, my_size)
     adjust_xaxis(ax, my_xlim, my_size)
-    title('With P-to-A facilitation only', fontsize=my_size)
+    title('With $P$-to-$A$ facilitation only', fontsize=my_size)
 
     ob = AnchoredHScaleBar(size=0.2, label="200 ms", loc=1, frameon=False, extent=0,
                            pad=0.5, sep=4., color="Black",
@@ -1050,8 +1069,7 @@ def plot_facilitationPtoA_effects(filename, simtime_current=10 * 60 * second, t_
             [IEI_end_start_FWHM_fac, amp_peaks_fac, durations_spont_fac],
             ['IEI [sec]', 'Amplitude ' + unit_amp, 'FWHM [ms]']):
         ax = subplot(sub_n)
-        plt.hist([my_data_default, my_data_fac], bins=30, color=['k', 'DarkMagenta'], normed=True,
-                 alpha=0.8)
+        plt.hist([my_data_default, my_data_fac], bins=30, color=['k', 'DarkMagenta'], normed=True, lw=0)  # normalized (AUC=1)
         adjust_yaxis(ax, my_size)
         ax.set_xticks(ax.get_xticks()[::2])
         ax.set_yticks(ax.get_yticks()[::2])
@@ -1060,22 +1078,28 @@ def plot_facilitationPtoA_effects(filename, simtime_current=10 * 60 * second, t_
         if my_label.find('Amplitude') != -1:
             xlim([0, 100])
             ax.set_xticks([0, 50, 100])
+            yticks([0, 0.08, 0.16])
         elif my_label.find('FWHM') != -1:
             xlim([50, 220])
             ax.set_xticks([50, 150])
+            yticks([0, 0.08, 0.16])
         else:
             ylabel('Prob. density [a.u.]', fontsize=my_size)
             xlim([0, 2])
             ax.set_xticks([0, 1])
+            yticks([0, 0.8, 1.6])
 
     # ================ correlation
     ax = subplot(gs1[3, 0:3])
     plt.scatter(IEI_end_start_FWHM, amp_peaks[1:], facecolor='k',
-                edgecolor='face', alpha=0.3, rasterized=True)
+                edgecolor='face', s=2, rasterized=True)
     plt.scatter(IEI_end_start_FWHM_fac, amp_peaks_fac[1:], facecolor='DarkMagenta',
-                edgecolor='face', alpha=0.3, rasterized=True)
+                edgecolor='face', s=2,  rasterized=True)
+    plt.axvline(x=0.17, linewidth=1., color='k', linestyle='-.')
+    plt.axvline(x=0.019, linewidth=1., color='DarkMagenta', linestyle='--')
+
     xlabel('Previous IEI [sec]', fontsize=my_size)
-    ylabel('\n'.join(wrap('Event amplitude ' + unit_amp, 40)), fontsize=my_size)
+    ylabel('\n'.join(wrap('Amplitude ' + unit_amp, 40)), fontsize=my_size)
     c, p = pearsonr(IEI_end_start_FWHM, amp_peaks[1:])
     adjust_axes_spont(ax, c, p, my_size)
     xlim([-0.1, 2.7])
@@ -1085,22 +1109,22 @@ def plot_facilitationPtoA_effects(filename, simtime_current=10 * 60 * second, t_
 
     popt, pcov = curve_fit(fit_func, IEI_end_start_FWHM, amp_peaks[1:], bounds=(0, [100, 100, 100]))
     aux_xaxis = np.arange(np.min(IEI_end_start_FWHM), np.max(IEI_end_start_FWHM), 0.05)
-    plt.plot(aux_xaxis, fit_func(aux_xaxis, *popt), 'k', lw=2.,
+    plt.plot(aux_xaxis, fit_func(aux_xaxis, *popt), 'k', lw=1.5,
              label='fit: a=%5.3f, b=%5.3f, c=%5.3f' % tuple(popt))
     print('Fitted time constant default:', 1. / popt[1] * 1e3, ' ms')
 
     popt, pcov = curve_fit(fit_func, IEI_end_start_FWHM_fac, amp_peaks_fac[1:], bounds=(0, [100, 100, 100]))
     aux_xaxis = np.arange(np.min(IEI_end_start_FWHM_fac), np.max(IEI_end_start_FWHM_fac), 0.05)
-    plt.plot(aux_xaxis, fit_func(aux_xaxis, *popt), 'DarkMagenta', lw=2.,
+    plt.plot(aux_xaxis, fit_func(aux_xaxis, *popt), 'Orchid', lw=1.5,
              label='fit: a=%5.3f, b=%5.3f, c=%5.3f' % tuple(popt))
     print('Fitted time constant plastic:', 1. / popt[1] * 1e3, ' ms')
 
     ax = subplot(gs1[3, 3:6])
     plt.scatter(IEI_end_start_FWHM, amp_peaks[:-1], facecolor='k',
-                edgecolor='k', alpha=0.3, rasterized=True)
+                edgecolor='k', s=2, rasterized=True)
     plt.scatter(IEI_end_start_FWHM_fac, amp_peaks_fac[:-1], facecolor='DarkMagenta',
-                edgecolor='DarkMagenta', alpha=0.3, rasterized=True)
-    ylabel('Event amplitude ' + unit_amp, fontsize=my_size)
+                edgecolor='DarkMagenta', s=2, rasterized=True)
+    ylabel('Amplitude ' + unit_amp, fontsize=my_size)
     xlabel('Next IEI [sec]', fontsize=my_size)
     c, p = pearsonr(IEI_end_start_FWHM, amp_peaks[:-1])
     adjust_axes_spont(ax, c, p, my_size)
