@@ -805,8 +805,14 @@ def compare_default_to_other_plasticities(filename, simtime_current=10*60*second
 
     ob = AnchoredHScaleBar(size=0.2, label="200 ms", loc=1, frameon=False, extent=0,
                            pad=0.5, sep=4., color="Black",
-                           borderpad=-1)
+                           borderpad=-1,
+                           my_size=my_size)
     ax.add_artist(ob)
+
+    textstr = r'\textbf{A}'
+    props = dict(facecolor='none', edgecolor='none')
+    ax.text(-0.16, 1.1, textstr, transform=ax.transAxes, fontsize=my_size + 4,
+            verticalalignment='top', bbox=props, size = my_size + 4)
 
     # =============== zoom into the traces for short sims
     event_range = int(2000 / compress_step_indices)  # take the 200ms before and after peak
@@ -834,12 +840,18 @@ def compare_default_to_other_plasticities(filename, simtime_current=10*60*second
             ylabel('\n'.join(wrap('Pop. firing rate [spikes/s]', 20)), fontsize=my_size)
         ob = AnchoredHScaleBar(size=50, label="50 ms", loc=2, frameon=False, extent=0,
                                pad=0.5, sep=4., color="Black",
-                               borderpad=0.5)
+                               borderpad=0.5, my_size=my_size)
         ax.add_artist(ob)
 
         rect = patches.Rectangle((50, -0.2), 300, max_rec, linewidth=1, linestyle='--', edgecolor='DarkGray',
                                  facecolor='none')
         ax.add_patch(rect)
+
+        if subn == 0:
+            textstr = r'\textbf{B}'
+            props = dict(facecolor='none', edgecolor='none')
+            ax.text(-0.55, 1.1, textstr, transform=ax.transAxes, fontsize=my_size + 4,
+                    verticalalignment='top', bbox=props, size=my_size + 4)
 
     for subn, dic_key, pop_size, mark_size in zip([0, 2, 4], ['P', 'B', 'A'], [8200, 135, 50], [0.15, 0.2, 0.25]):
         ax = subplot(gs2[1, subn:subn + 2])
@@ -877,7 +889,7 @@ def compare_default_to_other_plasticities(filename, simtime_current=10*60*second
                                                                  durations_spont_change],
                                                                 ['IEI [sec]', 'Amplitude ' + unit_amp, 'FWHM [ms]']):
         ax = subplot(sub_n)
-        plt.hist([my_data_default, my_data_change], color=['k', color_change], bins=30, lw=0, normed=True)
+        plt.hist([my_data_default, my_data_change], color=['k', color_change], bins=30, lw=0, density=True)
         adjust_yaxis(ax, my_size)
         ax.set_xticks(ax.get_xticks()[::2])
         ax.set_yticks(ax.get_yticks()[::2])
@@ -902,6 +914,12 @@ def compare_default_to_other_plasticities(filename, simtime_current=10*60*second
                 ax.set_xticks([0, 1, 2, 3, 4])
                 ax.set_yticks([0, 0.8, 1.6])
             ylabel('Prob. density [a. u.]', fontsize=my_size)
+
+        if my_label == 'IEI [sec]':
+            textstr = r'\textbf{C}'
+            props = dict(facecolor='none', edgecolor='none')
+            ax.text(-0.55, 1.1, textstr, transform=ax.transAxes, fontsize=my_size + 4,
+                    verticalalignment='top', bbox=props, size=my_size + 4)
 
     # ================ correlation spontaneous events
     ax = subplot(gs3[1, 0:3])
@@ -940,6 +958,11 @@ def compare_default_to_other_plasticities(filename, simtime_current=10*60*second
     plt.plot(aux_xaxis, fit_func(aux_xaxis, *popt), color=light_change, lw=1.5,
              label='fit: a=%5.3f, b=%5.3f, c=%5.3f' % tuple(popt))
     print('Fitted time constant plastic:', 1. / popt[1] * 1e3, ' ms')
+
+    textstr = r'\textbf{D}'
+    props = dict(facecolor='none', edgecolor='none')
+    ax.text(-0.33, 1.1, textstr, transform=ax.transAxes, fontsize=my_size + 4,
+            verticalalignment='top', bbox=props, size=my_size + 4)
 
     ax = subplot(gs3[1, 3:6])
     plt.scatter(IEI_end_start_FWHM, amp_peaks[:-1], facecolor='k',
@@ -1038,8 +1061,14 @@ def plot_facilitationPtoA_effects(filename, simtime_current=10 * 60 * second, t_
 
     ob = AnchoredHScaleBar(size=0.2, label="200 ms", loc=1, frameon=False, extent=0,
                            pad=0.5, sep=4., color="Black",
-                           borderpad=-1)
+                           borderpad=-1,
+                           my_size=my_size)
     ax.add_artist(ob)
+
+    textstr = r'\textbf{A}'
+    props = dict(facecolor='none', edgecolor='none')
+    ax.text(-0.145, 1.1, textstr, transform=ax.transAxes, fontsize=my_size + 4,
+            verticalalignment='top', bbox=props, size = my_size + 4)
 
     ax = subplot(gs1[1, 0:6])
     t_plot_start = np.argmin(np.abs(t_spont - 236))
@@ -1058,7 +1087,8 @@ def plot_facilitationPtoA_effects(filename, simtime_current=10 * 60 * second, t_
 
     ob = AnchoredHScaleBar(size=0.2, label="200 ms", loc=1, frameon=False, extent=0,
                            pad=0.5, sep=4., color="Black",
-                           borderpad=-1)
+                           borderpad=-1,
+                           my_size=my_size)
     ax.add_artist(ob)
 
     # ================ SWR properties
@@ -1089,6 +1119,12 @@ def plot_facilitationPtoA_effects(filename, simtime_current=10 * 60 * second, t_
             ax.set_xticks([0, 1])
             yticks([0, 0.8, 1.6])
 
+        if my_label == 'IEI [sec]':
+            textstr = r'\textbf{B}'
+            props = dict(facecolor='none', edgecolor='none')
+            ax.text(-0.55, 1.1, textstr, transform=ax.transAxes, fontsize=my_size + 4,
+                    verticalalignment='top', bbox=props, size=my_size + 4)
+
     # ================ correlation
     ax = subplot(gs1[3, 0:3])
     plt.scatter(IEI_end_start_FWHM, amp_peaks[1:], facecolor='k',
@@ -1118,6 +1154,11 @@ def plot_facilitationPtoA_effects(filename, simtime_current=10 * 60 * second, t_
     plt.plot(aux_xaxis, fit_func(aux_xaxis, *popt), 'Orchid', lw=1.5,
              label='fit: a=%5.3f, b=%5.3f, c=%5.3f' % tuple(popt))
     print('Fitted time constant plastic:', 1. / popt[1] * 1e3, ' ms')
+
+    textstr = r'\textbf{C}'
+    props = dict(facecolor='none', edgecolor='none')
+    ax.text(-0.32, 1.1, textstr, transform=ax.transAxes, fontsize=my_size + 4,
+            verticalalignment='top', bbox=props, size=my_size + 4)
 
     ax = subplot(gs1[3, 3:6])
     plt.scatter(IEI_end_start_FWHM, amp_peaks[:-1], facecolor='k',
@@ -1194,7 +1235,8 @@ def adds_on_fig_6(filename, fraction_stim=.6):
     xlim(xlim1)
     ob = AnchoredHScaleBar(size=50, label="50 ms", loc=3, frameon=False, extent=0,
                            pad=1., sep=4, color="Black",
-                           borderpad=0.1)  # pad and borderpad can be used to modify the position of the bar a bit
+                           borderpad=0.1,
+                           my_size=my_size)   # pad and borderpad can be used to modify the position of the bar a bit
     ax.add_artist(ob)
     add_sign_of_stimulation(ax, warm_up_time, time_with_curr)
 
