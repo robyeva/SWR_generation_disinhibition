@@ -35,7 +35,7 @@ def plot_branches(ax, aux, bs, name, plot_color='default', line_width=2):
     # Set default color:
     if (plot_color == 'default'):
         plot_color = aux.pop_color(name)
-        
+
     b_stable = bs[0], bs[2]
     b_unstable = bs[1], bs[3]
     for bi in b_stable:
@@ -44,7 +44,7 @@ def plot_branches(ax, aux, bs, name, plot_color='default', line_width=2):
         ax.plot(bi[:, 3], bi[:, get_index(name)], '--', c=plot_color, linewidth=line_width)
 
 # Plot and frame bifurcation diagram:
-def plot_bifurcation(ax,aux,bs,name,xlim,ymax,xlabel,xticks,xticklabels,yticks,yticklabels,font_size,plot_color='default',vlines=[],spine_width=0.75,line_width=2,maxvline=1,ylabelpad=2):
+def plot_bifurcation(ax,aux,bs,name,xlim,ymax,xlabel,xticks,xticklabels,yticks,yticklabels,font_size,plot_color='default',vlines=[],spine_width=0.75,line_width=2,maxvline=1,ylabelpad=2,inward_ticks=True):
     # Set default color:
     if (plot_color == 'default'):
         plot_color = aux.pop_color(name)
@@ -61,7 +61,11 @@ def plot_bifurcation(ax,aux,bs,name,xlim,ymax,xlabel,xticks,xticklabels,yticks,y
     ax.set_ylabel(name + ' [1/s]',fontsize=font_size, labelpad=ylabelpad)
 
     # Tick settings:
-    ax.tick_params(top=False,which='both',labelsize=font_size,direction='in',width=spine_width)
+    if inward_ticks == True:
+        ax.tick_params(top=False,which='both',labelsize=font_size,direction='in',width=spine_width)
+    else:
+        ax.tick_params(top=False,which='both',labelsize=font_size,direction='out',width=spine_width)
+
     ax.set_xticks(xticks)
     ax.set_xticklabels(xticklabels)
     if yticks != []: ax.set_yticks(yticks)

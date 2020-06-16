@@ -26,6 +26,13 @@ from helper_functions.utils_spiking import adjust_xaxis, adjust_yaxis, \
     define_Ifcurve_weighted_sum, adjust_axes_spont, create_connections, average_firing_rate
 from helper_functions.detect_peaks import detect_peaks
 
+# Import functions from bifurcation analysis code
+sys.path.append(os.path.dirname( __file__ ) + '/../')
+import bifurcation_analysis.figures_code.helper_functions.bifurcations as bif
+import bifurcation_analysis.figures_code.helper_functions.nullclines as nc
+import bifurcation_analysis.figures_code.helper_functions.model as model
+import bifurcation_analysis.figures_code.helper_functions.params as params
+import bifurcation_analysis.figures_code.helper_functions.aux_functions as aux
 
 # FIG 2
 def fig_bistability_manuscript(filename, save_targets=True):
@@ -764,13 +771,21 @@ def compare_default_to_other_plasticities(filename, simtime_current=10*60*second
     # plot(filt_short_depr)
     # show()
 
-    fig = plt.figure(figsize=[17.6 / 2.54, 1.2 * 17.6 / 2.54])
     my_size = 9
     plt.rc('text.latex', preamble=r'\usepackage{cmbright}')
     plt.rc('text', usetex=True)
-    gs1 = gridspec.GridSpec(5, 6, height_ratios=[1, 1, 1, 1, 1])
-    gs2 = gridspec.GridSpecFromSubplotSpec(2, 6, subplot_spec=gs1[1:3, :], hspace=0.0, wspace=0.8)
-    gs3 = gridspec.GridSpecFromSubplotSpec(2, 6, subplot_spec=gs1[3:, :], hspace=0.3, wspace=0.8)
+
+    if depr_compare:
+        fig = plt.figure(figsize=[17.6 / 2.54, 1.44 * 17.6 / 2.54])
+        gs1 = gridspec.GridSpec(7, 6, height_ratios=[1, 1, 1, 1, 1, 0., 0.8])
+        gs2 = gridspec.GridSpecFromSubplotSpec(2, 6, subplot_spec=gs1[1:3, :], hspace=0.0, wspace=0.8)
+        gs3 = gridspec.GridSpecFromSubplotSpec(2, 6, subplot_spec=gs1[3:5, :], hspace=0.5, wspace=0.8)
+        gs4 = gridspec.GridSpecFromSubplotSpec(1, 6, subplot_spec=gs1[6, :], hspace=0.0, wspace=1.)
+    else:
+        fig = plt.figure(figsize=[17.6 / 2.54, 1.2 * 17.6 / 2.54])
+        gs1 = gridspec.GridSpec(5, 6, height_ratios=[1, 1, 1, 1, 1])
+        gs2 = gridspec.GridSpecFromSubplotSpec(2, 6, subplot_spec=gs1[1:3, :], hspace=0.0, wspace=0.8)
+        gs3 = gridspec.GridSpecFromSubplotSpec(2, 6, subplot_spec=gs1[3:, :], hspace=0.3, wspace=0.8)
 
     gs1.update(hspace=.3, wspace=.8)
     ax = subplot(gs1[0, 0:6])
@@ -873,13 +888,13 @@ def compare_default_to_other_plasticities(filename, simtime_current=10*60*second
         plt.axis('off')
 
     if depr_compare:
-        fig.text(0.1, 0.545, '\n'.join(wrap('with $B$-to-$P$ depression added', 15)), va='center', ha='right', fontsize=my_size,
+        fig.text(0.1, 0.597, '\n'.join(wrap('with $B$-to-$P$ depression added', 15)), va='center', ha='right', fontsize=my_size,
                  color=color_change)
+        fig.text(0.1, 0.557, 'default', va='center', ha='right', fontsize=my_size)
     else:
         fig.text(0.1, 0.545, '\n'.join(wrap('with $P$-to-$A$ facilitation added', 15)), va='center', ha='right', fontsize=my_size,
                  color=color_change)
-
-    fig.text(0.1, 0.49, 'default', va='center', ha='right', fontsize=my_size)
+        fig.text(0.1, 0.49, 'default', va='center', ha='right', fontsize=my_size)
 
     # ================ SWR properties
     unit_amp = '[pA]'
@@ -927,7 +942,7 @@ def compare_default_to_other_plasticities(filename, simtime_current=10*60*second
                 edgecolor='k', s=2, rasterized=True)
     plt.scatter(IEI_end_start_FWHM_change, amp_peaks_change[1:], facecolor=color_change,
                 edgecolor=color_change, s=2, rasterized=True)
-    xlabel('Previous IEI [sec]', fontsize=my_size)
+    title('Previous IEI [sec]', fontsize=my_size)
     ylabel('\n'.join(wrap('Amplitude ' + unit_amp, 40)), fontsize=my_size)
     c, p = pearsonr(IEI_end_start_FWHM, amp_peaks[1:])  # of default
     adjust_axes_spont(ax, c, p, my_size)
@@ -970,7 +985,7 @@ def compare_default_to_other_plasticities(filename, simtime_current=10*60*second
     plt.scatter(IEI_end_start_FWHM_change, amp_peaks_change[:-1], facecolor=color_change,
                 edgecolor=color_change, s=2, rasterized=True)  # amplitude of previous event - both works
     ylabel('Amplitude ' + unit_amp, fontsize=my_size)
-    xlabel('Next IEI [sec]', fontsize=my_size)
+    title('Next IEI [sec]', fontsize=my_size)
     c, p = pearsonr(IEI_end_start_FWHM, amp_peaks[:-1])
     adjust_axes_spont(ax, c, p, my_size)
     if depr_compare:
@@ -982,6 +997,59 @@ def compare_default_to_other_plasticities(filename, simtime_current=10*60*second
         xticks([0, 2, 4])
         ylim([40, 80])
     yticks([40, 80])
+
+    # ================ Rate model bifurcation diagrams
+    if depr_compare:
+        home_dir = os.path.dirname(os.path.abspath(__file__)) + '/../../'
+        bs_def = bif.load_bifurcations(home_dir + 'bifurcation_analysis/bifurcation_diagrams/1param/','e',0,1)
+        bs = bif.load_bifurcations(home_dir + 'bifurcation_analysis/bifurcation_diagrams/1param/','e_double',0,1)
+
+        # x ticks:
+        e_ticks=[0, 0.25, 0.5, 0.75, 1]
+        e_ticklabels=[0,'',0.5,'',1]
+
+        # y ticks:
+        P_ticks=[0,50,100]
+        B_ticks=[0,100,200]
+        A_ticks=[0,5,10]
+
+        # y range:
+        pmax = 135
+        bmax = 250
+        amax = 15
+
+        ax = subplot(gs4[0,0:2])
+        textstr = r'\textbf{E}'
+        props = dict(facecolor='none', edgecolor='none')
+        ax.text(-0.54, 1.1, textstr, transform=ax.transAxes, fontsize=my_size + 4,
+                verticalalignment='top', bbox=props, size = my_size + 4)
+
+        # Plot e-P bifurcation diagram:
+        bif.plot_bifurcation(ax,aux,bs_def,'P',[0,1],pmax,'e',e_ticks,e_ticklabels,P_ticks,P_ticks,my_size,plot_color='black',line_width=1.5,inward_ticks=False)
+        bif.plot_bifurcation(ax,aux,bs,'P',[0,1],pmax,'e',e_ticks,e_ticklabels,P_ticks,P_ticks,my_size,plot_color='DeepPink',line_width=1.5,inward_ticks=False)
+
+        ax = subplot(gs4[0, 2:4])
+        # Plot e-B bifurcation diagram:
+        bif.plot_bifurcation(ax,aux,bs_def,'B',[0,1],bmax,'e',e_ticks,e_ticklabels,B_ticks,B_ticks,my_size,plot_color='black',line_width=1.5,inward_ticks=False)
+        bif.plot_bifurcation(ax,aux,bs,'B',[0,1],bmax,'e',e_ticks,e_ticklabels,B_ticks,B_ticks,my_size,plot_color='DeepPink',line_width=1.5,inward_ticks=False)
+
+        # Create grid spanning e and B space:
+        E, B = np.meshgrid(np.arange(0, 1, .01), np.arange(-1, 250, .5))
+        # Get e nullcline for values in grid:
+        dE = model.de(E, B, params.tau_d, params.eta_d)
+        # Plot e nullcline:
+        nc.plot_nullcline(ax,E,B,dE,'e nullcline','upper right',(1.05,1.05),my_size)
+
+        ax = subplot(gs4[0, 4:6])
+
+        # Plot e-A bifurcation diagram:
+        bif.plot_bifurcation(ax,aux,bs_def,'A',[0,1],amax,'e',e_ticks,e_ticklabels,A_ticks,A_ticks,my_size,plot_color='black',line_width=1.5,inward_ticks=False)
+        bif.plot_bifurcation(ax,aux,bs,'A',[0,1],amax,'e',e_ticks,e_ticklabels,A_ticks,A_ticks,my_size,plot_color='DeepPink',line_width=1.5,inward_ticks=False)
+
+        # Separating line:
+        fig.text(0.5, 0.209, 'Rate model', va='center', ha='center', fontsize=my_size, bbox=dict(facecolor='white', edgecolor='white'))
+        line = plt.Line2D([0.06,0.9],[0.21,0.21], linewidth=1, linestyle='--', transform=fig.transFigure, color='DarkGray')
+        fig.add_artist(line)
 
     if depr_compare:
         savefig(
@@ -1040,12 +1108,18 @@ def plot_facilitationPtoA_effects(filename, simtime_current=10 * 60 * second, t_
     IEI_end_start_FWHM_fac, amp_peaks_fac, durations_spont_fac, t_spont_fac, trace_spont_fac, \
     filt_trace_fac = inside_analyze_spont(info_dictionary_fac, use_b_input=True, detection_thr=40, min_dist_idx=2000)
 
-    fig = plt.figure(figsize=[17.6 / 2.54, 0.9 * 17.6 / 2.54])
+    # fig = plt.figure(figsize=[17.6 / 2.54, 0.9 * 17.6 / 2.54])
+    fig = plt.figure(figsize=[17.6 / 2.54, 1.125 * 17.6 / 2.54])
+    gs1 = gridspec.GridSpec(6, 6, height_ratios=[1, 1, 1, 1, 0., 0.8])
+    gs2 = gridspec.GridSpecFromSubplotSpec(2, 6, subplot_spec=gs1[2:4, :], hspace=0.5, wspace=0.8)
+    gs3 = gridspec.GridSpecFromSubplotSpec(1, 6, subplot_spec=gs1[5, :], hspace=0., wspace=1.0)
+
     my_size = 9
     plt.rc('text.latex', preamble=r'\usepackage{cmbright}')
     plt.rc('text', usetex=True)
-    gs1 = gridspec.GridSpec(4, 6)
+
     gs1.update(hspace=.3, wspace=1.5)
+
     ax = subplot(gs1[0, 0:6])
     t_plot_start = np.argmin(np.abs(t_spont - 236))
     t_plot_end = np.argmin(np.abs(t_spont - 246))
@@ -1094,7 +1168,7 @@ def plot_facilitationPtoA_effects(filename, simtime_current=10 * 60 * second, t_
     # ================ SWR properties
     unit_amp = '[pA]'
     for sub_n, my_data_default, my_data_fac, my_label in zip(
-            [gs1[2, 0:2], gs1[2, 2:4], gs1[2, 4:6]],
+            [gs2[0, 0:2], gs2[0, 2:4], gs2[0, 4:6]],
             [IEI_end_start_FWHM, amp_peaks, durations_spont],
             [IEI_end_start_FWHM_fac, amp_peaks_fac, durations_spont_fac],
             ['IEI [sec]', 'Amplitude ' + unit_amp, 'FWHM [ms]']):
@@ -1126,7 +1200,7 @@ def plot_facilitationPtoA_effects(filename, simtime_current=10 * 60 * second, t_
                     verticalalignment='top', bbox=props, size=my_size + 4)
 
     # ================ correlation
-    ax = subplot(gs1[3, 0:3])
+    ax = subplot(gs2[1, 0:3])
     plt.scatter(IEI_end_start_FWHM, amp_peaks[1:], facecolor='k',
                 edgecolor='face', s=2, rasterized=True)
     plt.scatter(IEI_end_start_FWHM_fac, amp_peaks_fac[1:], facecolor='DarkMagenta',
@@ -1134,7 +1208,7 @@ def plot_facilitationPtoA_effects(filename, simtime_current=10 * 60 * second, t_
     plt.axvline(x=0.17, linewidth=1., color='k', linestyle='-.')
     plt.axvline(x=0.019, linewidth=1., color='DarkMagenta', linestyle='--')
 
-    xlabel('Previous IEI [sec]', fontsize=my_size)
+    title('Previous IEI [sec]', fontsize=my_size)
     ylabel('\n'.join(wrap('Amplitude ' + unit_amp, 40)), fontsize=my_size)
     c, p = pearsonr(IEI_end_start_FWHM, amp_peaks[1:])
     adjust_axes_spont(ax, c, p, my_size)
@@ -1160,19 +1234,66 @@ def plot_facilitationPtoA_effects(filename, simtime_current=10 * 60 * second, t_
     ax.text(-0.32, 1.1, textstr, transform=ax.transAxes, fontsize=my_size + 4,
             verticalalignment='top', bbox=props, size=my_size + 4)
 
-    ax = subplot(gs1[3, 3:6])
+    ax = subplot(gs2[1, 3:6])
     plt.scatter(IEI_end_start_FWHM, amp_peaks[:-1], facecolor='k',
                 edgecolor='k', s=2, rasterized=True)
     plt.scatter(IEI_end_start_FWHM_fac, amp_peaks_fac[:-1], facecolor='DarkMagenta',
                 edgecolor='DarkMagenta', s=2, rasterized=True)
     ylabel('Amplitude ' + unit_amp, fontsize=my_size)
-    xlabel('Next IEI [sec]', fontsize=my_size)
+    title('Next IEI [sec]', fontsize=my_size)
     c, p = pearsonr(IEI_end_start_FWHM, amp_peaks[:-1])
     adjust_axes_spont(ax, c, p, my_size)
     xlim([-0.1, 2.7])
     yticks([40, 100])
     xticks([0, 1, 2])
     ylim([30, 100])
+
+    # ================ Rate model bifurcation diagram
+    home_dir = os.path.dirname(os.path.abspath(__file__)) + '/../../'
+    bs = bif.load_bifurcations(home_dir + 'bifurcation_analysis/bifurcation_diagrams/1param/','z',0,1)
+
+    # x ticks:
+    z_ticks=[0, 0.25, 0.5, 0.75, 1]
+    z_ticklabels=[0,'',0.5,'',1]
+
+    # y ticks:
+    P_ticks=[0,20,40]
+    B_ticks=[0,50,100]
+    A_ticks=[0,5,10]
+
+    # y range:
+    pmax = 50
+    bmax = 120
+    amax = 15
+
+    ax = subplot(gs3[0,0:2])
+    textstr = r'\textbf{D}'
+    props = dict(facecolor='none', edgecolor='none')
+    ax.text(-0.54, 1.1, textstr, transform=ax.transAxes, fontsize=my_size + 4,
+            verticalalignment='top', bbox=props, size = my_size + 4)
+
+    # Plot z-P bifurcation diagram:
+    bif.plot_bifurcation(ax,aux,bs,'P',[0,1],pmax,'z',z_ticks,z_ticklabels,P_ticks,P_ticks,my_size,plot_color='DarkMagenta',line_width=1.5,inward_ticks=False)
+
+    # Create grid spanning z and P space:
+    Z, P = np.meshgrid(np.arange(0, 1, .01), np.arange(-1, 120, .5))
+    # Get z nullcline for values in grid:
+    dZ = model.dz(Z, P, params.tau_f, params.eta_f, params.z_max)
+    # Plot z nullcline:
+    nc.plot_nullcline(ax,Z,P,dZ,'z nullcline','lower right',(1.05,0.0),my_size)
+
+    ax = subplot(gs3[0, 2:4])
+    # Plot z-B bifurcation diagram:
+    bif.plot_bifurcation(ax,aux,bs,'B',[0,1],bmax,'z',z_ticks,z_ticklabels,B_ticks,B_ticks,my_size,plot_color='DarkMagenta',line_width=1.5,inward_ticks=False)
+
+    ax = subplot(gs3[0, 4:6])
+    # Plot z-A bifurcation diagram:
+    bif.plot_bifurcation(ax,aux,bs,'A',[0,1],amax,'z',z_ticks,z_ticklabels,A_ticks,A_ticks,my_size,plot_color='DarkMagenta',line_width=1.5,inward_ticks=False)
+
+    # Separating line:
+    fig.text(0.5, 0.229, 'Rate model', va='center', ha='center', fontsize=my_size, bbox=dict(facecolor='white', edgecolor='white'))
+    line = plt.Line2D([0.06,0.9],[0.23,0.23], linewidth=1, linestyle='--', transform=fig.transFigure, color='DarkGray')
+    fig.add_artist(line)
 
     savefig(os.path.join(path_folder, filename + '_compare_with_PtoAfac_only.png'),
             dpi=200, format='png', bbox_inches='tight')
