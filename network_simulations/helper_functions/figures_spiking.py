@@ -942,7 +942,11 @@ def compare_default_to_other_plasticities(filename, simtime_current=10*60*second
                 edgecolor='k', s=2, rasterized=True)
     plt.scatter(IEI_end_start_FWHM_change, amp_peaks_change[1:], facecolor=color_change,
                 edgecolor=color_change, s=2, rasterized=True)
-    title('Previous IEI [sec]', fontsize=my_size)
+    if depr_compare:
+        title('Previous IEI [sec]', fontsize=my_size)
+    else:
+        xlabel('Previous IEI [sec]', fontsize=my_size)
+
     ylabel('\n'.join(wrap('Amplitude ' + unit_amp, 40)), fontsize=my_size)
     c, p = pearsonr(IEI_end_start_FWHM, amp_peaks[1:])  # of default
     adjust_axes_spont(ax, c, p, my_size)
@@ -985,7 +989,10 @@ def compare_default_to_other_plasticities(filename, simtime_current=10*60*second
     plt.scatter(IEI_end_start_FWHM_change, amp_peaks_change[:-1], facecolor=color_change,
                 edgecolor=color_change, s=2, rasterized=True)  # amplitude of previous event - both works
     ylabel('Amplitude ' + unit_amp, fontsize=my_size)
-    title('Next IEI [sec]', fontsize=my_size)
+    if depr_compare:
+        title('Next IEI [sec]', fontsize=my_size)
+    else:
+        xlabel('Next IEI [sec]', fontsize=my_size)
     c, p = pearsonr(IEI_end_start_FWHM, amp_peaks[:-1])
     adjust_axes_spont(ax, c, p, my_size)
     if depr_compare:
