@@ -1007,9 +1007,28 @@ def compare_default_to_other_plasticities(filename, simtime_current=10*60*second
 
     # ================ Rate model bifurcation diagrams
     if depr_compare:
+        data_def = np.load('results/noisy_rate_model_short_sim_default.npz', encoding='latin1', allow_pickle=True)
+        dict_def = dict(zip(("{}".format(k) for k in data_def), (data_def[k] for k in data_def)))
+        t_def = dict_def['t']
+        p_def = dict_def['p']
+        b_def = dict_def['b']
+        a_def = dict_def['a']
+        e_def = dict_def['e']
+
+        data_ext = np.load('results/noisy_rate_model_short_sim_extra_dpr.npz', encoding='latin1', allow_pickle=True)
+        dict_ext = dict(zip(("{}".format(k) for k in data_ext), (data_ext[k] for k in data_ext)))
+        t_ext = dict_ext['t']
+        p_ext = dict_ext['p']
+        b_ext = dict_ext['b']
+        a_ext = dict_ext['a']
+        e_ext = dict_ext['e']
+
         home_dir = os.path.dirname(os.path.abspath(__file__)) + '/../../'
         bs_def = bif.load_bifurcations(home_dir + 'bifurcation_analysis/bifurcation_diagrams/1param/','e',0,1)
         bs = bif.load_bifurcations(home_dir + 'bifurcation_analysis/bifurcation_diagrams/1param/','e_double',0,1)
+
+        tstart = 5*1e3 # sec
+        tstop = 8*1e3 # sec
 
         # x ticks:
         e_ticks=[0, 0.25, 0.5, 0.75, 1]
@@ -1034,6 +1053,8 @@ def compare_default_to_other_plasticities(filename, simtime_current=10*60*second
         # Plot e-P bifurcation diagram:
         bif.plot_bifurcation(ax,aux,bs_def,'P',[0,1],pmax,'e',e_ticks,e_ticklabels,P_ticks,P_ticks,my_size,plot_color='black',line_width=1.5,inward_ticks=False)
         bif.plot_bifurcation(ax,aux,bs,'P',[0,1],pmax,'e',e_ticks,e_ticklabels,P_ticks,P_ticks,my_size,plot_color='DeepPink',line_width=1.5,inward_ticks=False)
+        ax.plot(e_def[(t_def >= tstart) & (t_def <= tstop)], p_def[(t_def >= tstart) & (t_def <= tstop)], c='DarkGray', lw=1.)
+        ax.plot(e_ext[(t_ext >= tstart) & (t_ext <= tstop)], p_ext[(t_ext >= tstart) & (t_ext <= tstop)], c='Pink', lw=1.)
 
         ax = subplot(gs4[0, 2:4])
         # Plot e-B bifurcation diagram:
@@ -1047,11 +1068,16 @@ def compare_default_to_other_plasticities(filename, simtime_current=10*60*second
         # Plot e nullcline:
         nc.plot_nullcline(ax,E,B,dE,'e nullcline','upper right',(1.05,1.05),my_size)
 
+        ax.plot(e_def[(t_def >= tstart) & (t_def <= tstop)], b_def[(t_def >= tstart) & (t_def <= tstop)], c='DarkGray', lw=1.)
+        ax.plot(e_ext[(t_ext >= tstart) & (t_ext <= tstop)], b_ext[(t_ext >= tstart) & (t_ext <= tstop)], c='Pink', lw=1.)
+
         ax = subplot(gs4[0, 4:6])
 
         # Plot e-A bifurcation diagram:
         bif.plot_bifurcation(ax,aux,bs_def,'A',[0,1],amax,'e',e_ticks,e_ticklabels,A_ticks,A_ticks,my_size,plot_color='black',line_width=1.5,inward_ticks=False)
         bif.plot_bifurcation(ax,aux,bs,'A',[0,1],amax,'e',e_ticks,e_ticklabels,A_ticks,A_ticks,my_size,plot_color='DeepPink',line_width=1.5,inward_ticks=False)
+        ax.plot(e_def[(t_def >= tstart) & (t_def <= tstop)], a_def[(t_def >= tstart) & (t_def <= tstop)], c='DarkGray', lw=1.)
+        ax.plot(e_ext[(t_ext >= tstart) & (t_ext <= tstop)], a_ext[(t_ext >= tstart) & (t_ext <= tstop)], c='Pink', lw=1.)
 
         # Separating line:
         fig.text(0.5, 0.209, 'Rate model', va='center', ha='center', fontsize=my_size, bbox=dict(facecolor='white', edgecolor='white'))
@@ -1256,6 +1282,16 @@ def plot_facilitationPtoA_effects(filename, simtime_current=10 * 60 * second, t_
     ylim([30, 100])
 
     # ================ Rate model bifurcation diagram
+    data_facil = np.load('results/noisy_rate_model_short_sim_facil.npz', encoding='latin1', allow_pickle=True)
+    dict_facil = dict(zip(("{}".format(k) for k in data_facil), (data_facil[k] for k in data_facil)))
+    t_facil = dict_facil['t']
+    p_facil = dict_facil['p']
+    b_facil = dict_facil['b']
+    a_facil = dict_facil['a']
+    z_facil = dict_facil['z']
+    tstart = 1*1e3 # sec
+    tstop = 9*1e3 # sec
+
     home_dir = os.path.dirname(os.path.abspath(__file__)) + '/../../'
     bs = bif.load_bifurcations(home_dir + 'bifurcation_analysis/bifurcation_diagrams/1param/','z',0,1)
 
@@ -1264,12 +1300,12 @@ def plot_facilitationPtoA_effects(filename, simtime_current=10 * 60 * second, t_
     z_ticklabels=[0,'',0.5,'',1]
 
     # y ticks:
-    P_ticks=[0,20,40]
+    P_ticks=[0,25,50]
     B_ticks=[0,50,100]
     A_ticks=[0,5,10]
 
     # y range:
-    pmax = 50
+    pmax = 60
     bmax = 120
     amax = 15
 
@@ -1289,13 +1325,17 @@ def plot_facilitationPtoA_effects(filename, simtime_current=10 * 60 * second, t_
     # Plot z nullcline:
     nc.plot_nullcline(ax,Z,P,dZ,'z nullcline','lower right',(1.05,0.0),my_size)
 
+    ax.plot(z_facil[(t_facil >= tstart) & (t_facil <= tstop)], p_facil[(t_facil >= tstart) & (t_facil <= tstop)], c='Orchid', lw=1.)
+
     ax = subplot(gs3[0, 2:4])
     # Plot z-B bifurcation diagram:
     bif.plot_bifurcation(ax,aux,bs,'B',[0,1],bmax,'z',z_ticks,z_ticklabels,B_ticks,B_ticks,my_size,plot_color='DarkMagenta',line_width=1.5,inward_ticks=False)
+    ax.plot(z_facil[(t_facil >= tstart) & (t_facil <= tstop)], b_facil[(t_facil >= tstart) & (t_facil <= tstop)], c='Orchid', lw=1.)
 
     ax = subplot(gs3[0, 4:6])
     # Plot z-A bifurcation diagram:
     bif.plot_bifurcation(ax,aux,bs,'A',[0,1],amax,'z',z_ticks,z_ticklabels,A_ticks,A_ticks,my_size,plot_color='DarkMagenta',line_width=1.5,inward_ticks=False)
+    ax.plot(z_facil[(t_facil >= tstart) & (t_facil <= tstop)], a_facil[(t_facil >= tstart) & (t_facil <= tstop)], c='Orchid', lw=1.)
 
     # Separating line:
     fig.text(0.5, 0.229, 'Rate model', va='center', ha='center', fontsize=my_size, bbox=dict(facecolor='white', edgecolor='white'))
