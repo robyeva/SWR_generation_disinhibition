@@ -167,15 +167,15 @@ def plot_one_side(fig, grid, sim_type, tstart, tstop, t, b, e, b_pulses, lowpass
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
         ax.spines['bottom'].set_visible(False)
-        ax.tick_params(axis='x', which='both', direction='in', bottom=False, top=False, labelbottom=False)
-        ax.tick_params(axis='y', which='both', direction='in', bottom=False, top=False, labelbottom=False, labelsize=pm.fonts)
+        ax.tick_params(axis='x', which='both', direction='out', bottom=False, top=False, labelbottom=False)
+        ax.tick_params(axis='y', which='both', direction='out', bottom=False, top=False, labelbottom=False, labelsize=pm.fonts)
         ax.set_xlim([tstart,tstop])
 
     for ax in [ax_e_B, ax_IEI_hist, ax_prev, ax_next]:
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
-        ax.tick_params(axis='x', which='both', direction='in', bottom=True, top=False, labelbottom=True, labelsize=pm.fonts)
-        ax.tick_params(axis='y', which='both', direction='in', bottom=False, top=False, labelbottom=False, labelsize=pm.fonts)
+        ax.tick_params(axis='x', which='both', direction='out', bottom=True, top=False, labelbottom=True, labelsize=pm.fonts)
+        ax.tick_params(axis='y', which='both', direction='out', bottom=False, top=False, labelbottom=False, labelsize=pm.fonts)
 
     ax_IEI_hist.spines['left'].set_visible(False)
 
@@ -189,7 +189,9 @@ def plot_one_side(fig, grid, sim_type, tstart, tstop, t, b, e, b_pulses, lowpass
         ax_t_B.set_title(r'Evoked',loc='center',x=0.75,y=1.20,fontsize=pm.fonts)
 
     ax_t_B.plot(t, b, color='#3c3fef', lw=1.5)
-    ax_t_B.plot(t, lowpass_b, color='black', lw=1.0)
+    ax_t_B.axhline(112,xmin=0.12,xmax=(0.12+1/6), linewidth=1, color='black')
+    ax_t_B.text(tstart+(tstop-tstart)*0.08,120,'250 ms',fontsize=pm.fonts)
+
     if (sim_type == 'evoke') and (b_pulses.any() > 0) and (peak_data != False):
         ytop, ybottom = ax_t_B.get_ylim()
         ax_t_B.fill_between(t, ybottom, ytop, where = b_pulses > 0, facecolor='#d4b021')
@@ -201,7 +203,7 @@ def plot_one_side(fig, grid, sim_type, tstart, tstop, t, b, e, b_pulses, lowpass
                 else:
                     ax_t_B.annotate('', xy=(b_pulses_onset[i], 0), xytext=(b_pulses_onset[i], -30),\
                         xycoords='data',arrowprops=dict(arrowstyle="->", lw=1.,color='lightgray'))
-    ax_t_B.set_ylim([-0.1*B_ticks[-1],1.2*B_ticks[-1]])
+    ax_t_B.set_ylim([-0.1*B_ticks[-1],1.3*B_ticks[-1]])
     if sim_type is 'spont': ax_t_B.set_ylabel("B [1/s]",fontsize=pm.fonts)
     ax_t_B.set_yticks(B_ticks)
     ax_t_B.set_yticklabels(B_ticks,fontsize=pm.fonts)
@@ -216,25 +218,25 @@ def plot_one_side(fig, grid, sim_type, tstart, tstop, t, b, e, b_pulses, lowpass
     bs = bif.load_bifurcations(bif_path, 'e', 0, 1)
 
     if sim_type is 'spont':
-        ax_e_B.set_title(r'\textbf{B1}',loc='left',x=-0.20,y=0.95,fontsize=pm.fonts)
+        ax_e_B.set_title(r'\textbf{B1}',loc='left',x=-0.22,y=0.95,fontsize=pm.fonts)
     else:
-        ax_e_B.set_title(r'\textbf{B2}',loc='left',x=-0.20,y=0.95,fontsize=pm.fonts)
+        ax_e_B.set_title(r'\textbf{B2}',loc='left',x=-0.22,y=0.95,fontsize=pm.fonts)
 
-    bif.plot_bifurcation(ax_e_B,aux,bs,'B',[0.25,1],1,'',[],[],B_ticks,'',pm.fonts,plot_color='gray',line_width=1.)
+    bif.plot_bifurcation(ax_e_B,aux,bs,'B',[0.25,1],1,'',[0.4,0.8],[0.4,0.8],B_ticks,B_ticks,pm.fonts,plot_color='gray',line_width=1.,inward_ticks=False)
     ax_e_B.set_ylabel('',fontsize=pm.fonts)
     ax_e_B.plot(e[(t >= tstart) & (t <= tstop)], b[(t >= tstart) & (t <= tstop)], color='#3c3fef', lw=1.5)
     ax_e_B.set_ylim([-0.1*B_ticks[-1],1.2*B_ticks[-1]])
-    ax_e_B.set_xlabel('e', fontsize=pm.fonts)
+    ax_e_B.set_title('e', y=0.95, fontsize=pm.fonts)
 
     if peak_data != False:
 
         if sim_type is 'spont':
-            ax_IEI_hist.set_title(r'\textbf{C1}',loc='left',x=-0.20,y=0.85,fontsize=pm.fonts)
+            ax_IEI_hist.set_title(r'\textbf{C1}',loc='left',x=-0.22,y=0.95,fontsize=pm.fonts)
         else:
-            ax_IEI_hist.set_title(r'\textbf{C2}',loc='left',x=-0.20,y=0.85,fontsize=pm.fonts)
+            ax_IEI_hist.set_title(r'\textbf{C2}',loc='left',x=-0.22,y=0.95,fontsize=pm.fonts)
 
         ax_IEI_hist.hist(peaks_IEI_prev,bins=30,color='gray')
-        ax_IEI_hist.set_xlabel('IEI [s]',fontsize=pm.fonts)
+        ax_IEI_hist.set_title('IEI [s]', y=0.95, fontsize=pm.fonts)
         ax_IEI_hist.set_xlim([0,3])
         ax_IEI_hist.set_xticks([0,1,2])
         ax_IEI_hist.set_xticklabels([0,1,2],fontsize=pm.fonts)
@@ -251,20 +253,20 @@ def plot_one_side(fig, grid, sim_type, tstart, tstop, t, b, e, b_pulses, lowpass
         if fit_params.all != 0:
             x_array = np.arange(np.min(peaks_IEI_prev),np.max(peaks_IEI_prev),0.01)
             ax_prev.plot(x_array,fit_func(x_array,*fit_params),color='red', lw=1.5)
-        ax_prev.set_xlabel('previous IEI [s]',fontsize=pm.fonts)
+        ax_prev.set_xlabel('Previous IEI [s]',fontsize=pm.fonts)
         if sim_type is 'spont': ax_prev.set_ylabel('FWHM [ms]',fontsize=pm.fonts)
-        ax_prev.set_ylim([30,110])
-        ax_prev.set_yticks([50,100])
-        ax_prev.set_yticklabels([50,100],fontsize=pm.fonts)
+        ax_prev.set_ylim([30,105])
+        ax_prev.set_yticks([45,90])
+        ax_prev.set_yticklabels([45,90],fontsize=pm.fonts)
         ax_prev.set_xlim([0,3])
         ax_prev.set_xticks([0,1,2])
         ax_prev.set_xticklabels([0,1,2],fontsize=pm.fonts)
 
         ax_next.plot(peaks_IEI_next, peaks_duration_next, 'k.', ms=3)
-        ax_next.set_xlabel('next IEI [s]',fontsize=pm.fonts)
-        ax_next.set_yticklabels(labels=[],fontsize=pm.fonts)
-        ax_next.set_ylim([30,110])
-        ax_next.set_yticks([50,100])
+        ax_next.set_xlabel('Next IEI [s]',fontsize=pm.fonts)
+        ax_next.set_ylim([30,105])
+        ax_next.set_yticks([45,90])
+        ax_next.set_yticklabels([45,90],fontsize=pm.fonts)
         ax_next.set_xlim([0,3])
         ax_next.set_xticks([0,1,2])
         ax_next.set_xticklabels([0,1,2],fontsize=pm.fonts)
@@ -294,9 +296,9 @@ def plot_fig_12():
     fig_height = 0.4*17.6/2.54
 
     fig = plt.figure(figsize=(fig_width,fig_height))
-    gs = gridspec.GridSpec(5, 13, width_ratios=[1,1,1,1,1,1,0.2,1,1,1,1,1,1])
-    gs_spont = gridspec.GridSpecFromSubplotSpec(5, 6, subplot_spec=gs[:, 0:6], height_ratios=[0.75,0.20,0.40,0.25,0.75])
-    gs_evoke = gridspec.GridSpecFromSubplotSpec(5, 6, subplot_spec=gs[:, 7:13], height_ratios=[0.75,0.20,0.40,0.25,0.75])
+    gs = gridspec.GridSpec(8, 13, width_ratios=[1,1,1,1,1,1,0.2,1,1,1,1,1,1])
+    gs_spont = gridspec.GridSpecFromSubplotSpec(5, 6, subplot_spec=gs[:, 0:6], height_ratios=[1.,0.45,0.3,0.25,1.])
+    gs_evoke = gridspec.GridSpecFromSubplotSpec(5, 6, subplot_spec=gs[:, 7:13], height_ratios=[1.,0.45,0.3,0.25,1.])
 
     t_plot_start = 195.4*1e3
     t_plot_stop = 196.9*1e3
@@ -306,6 +308,6 @@ def plot_fig_12():
     plot_one_side(fig, gs_evoke, 'evoke', t_plot_start, t_plot_stop,\
                     t_evoke, b_evoke, e_evoke, b_pulses_evoke, lowpass_b_evoke, peak_data_evoke, fit_data_evoke, b_pulses_onset, b_pulses_success)
 
-    plt.subplots_adjust(wspace=1., hspace=0.2)
+    plt.subplots_adjust(wspace=1.5, hspace=0.25)
 
-    fig.savefig('results/fig_rate_model_noise.png',bbox_inches='tight', dpi=300)
+    fig.savefig('results/fig_rate_model_noise.eps', bbox_inches='tight', dpi=800)
