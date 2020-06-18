@@ -1,12 +1,11 @@
 import scipy.signal as signal
 from scipy.optimize import curve_fit
+from scipy.stats import pearsonr
 
 import numpy as np
 
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
-
-
 
 import sys
 import os
@@ -15,79 +14,22 @@ from matplotlib import rc
 rc('text', usetex=True)
 
 from helper_functions.utils_spiking import create_butter_bandpass, fit_func
+from helper_functions.detect_peaks import detect_peaks
 import helper_functions.params_noisy_rate as pm
 
 sys.path.append(os.path.dirname( __file__ ) + '/../../')
 import bifurcation_analysis.figures_code.helper_functions.bifurcations as bif
 import bifurcation_analysis.figures_code.helper_functions.aux_functions as aux
 
-def plot_fig_12():
-    data_spont = np.load('results/noisy_rate_model_long_sim_spont.npz', encoding='latin1', allow_pickle=True)
-    dict_spont = dict(zip(("{}".format(k) for k in data_spont), (data_spont[k] for k in data_spont)))
-    t_spont = dict_spont['t']
-    b_spont = dict_spont['b']
-    e_spont = dict_spont['e']
-    b_pulses_spont = dict_spont['b_pulses']
-    lowpass_b_spont = dict_spont['lowpass_b']
-    peak_data_spont = dict_spont['peak_data']
-    fit_data_spont = dict_spont['fit_data']
-
-    data_evoke = np.load('results/noisy_rate_model_long_sim_evoke.npz', encoding='latin1', allow_pickle=True)
-    dict_evoke = dict(zip(("{}".format(k) for k in data_evoke), (data_evoke[k] for k in data_evoke)))
-    t_evoke = dict_evoke['t']
-    b_evoke = dict_evoke['b']
-    e_evoke = dict_evoke['e']
-    b_pulses_evoke = dict_evoke['b_pulses']
-    lowpass_b_evoke = dict_evoke['lowpass_b']
-    peak_data_evoke = dict_evoke['peak_data']
-    fit_data_evoke = dict_evoke['fit_data']
-    b_pulses_onset = dict_evoke['b_pulses_onset']
-    b_pulses_success = dict_evoke['b_pulses_success']
-
-    fig_width = 17.6/2.54
-    fig_height = 0.4*17.6/2.54
-
-    fig = plt.figure(figsize=(fig_width,fig_height))
-    gs = gridspec.GridSpec(5, 13, width_ratios=[1,1,1,1,1,1,0.2,1,1,1,1,1,1])
-    gs_spont = gridspec.GridSpecFromSubplotSpec(5, 6, subplot_spec=gs[:, 0:6], height_ratios=[0.75,0.20,0.40,0.25,0.75])
-    gs_evoke = gridspec.GridSpecFromSubplotSpec(5, 6, subplot_spec=gs[:, 7:13], height_ratios=[0.75,0.20,0.40,0.25,0.75])
-
-    # t_plot_start = 195.4*1e3
-    # t_plot_stop = 196.9*1e3
-    t_plot_start = 51.*1e3
-    t_plot_stop = 52.5*1e3
-
-    plot_one_side(fig, gs_spont, 'spont', t_plot_start, t_plot_stop,\
-                    t_spont, b_spont, e_spont, b_pulses_spont, lowpass_b_spont, peak_data_spont, fit_data_spont, None, None)
-    plot_one_side(fig, gs_evoke, 'evoke', t_plot_start, t_plot_stop,\
-                    t_evoke, b_evoke, e_evoke, b_pulses_evoke, lowpass_b_evoke, peak_data_evoke, fit_data_evoke, b_pulses_onset, b_pulses_success)
-
-    plt.subplots_adjust(wspace=1., hspace=0.2)
-
-    fig.savefig('results/fig_rate_model_noise.png',bbox_inches='tight', dpi=300)
-
-
 def get_peak_data(t, b, b_pulses, sim_type):
 
     dt = t[1] - t[0]
-    lowpass_b = filter_signal(b, dt, pm.b_findpeak_cutoff)
-    peak_data, b_pulses_onset, b_pulses_success = find_peaks(t, lowpass_b, pm.b_findpeak_height, sim_type, b_pulses)
+    simtime = (t[-1] - t[0])/1e3
 
-    if peak_data == False:
-        fit_data = False
-    else:
-        _, _, peaks_duration_prev, peaks_duration_next, peaks_IEI_prev, peaks_IEI_next = peak_data
-        fit_data = fit_exp(peaks_duration_prev, peaks_IEI_prev)
+    b_butter, a_butter = create_butter_bandpass(-1, pm.b_findpeak_cutoff, 1e3/dt, order=2, btype='low')
+    lowpass_b = signal.filtfilt(b_butter, a_butter, b)
 
-
-    print('Minimum IEI is %.1lf ms'%(np.min(peaks_IEI_prev)*1000))
-    print('Time constant is %.1lf ms'%(1e3/fit_data[1][1]))
-
-    return lowpass_b, peak_data, fit_data, b_pulses_onset, b_pulses_success
-
-def find_peaks(t, lowpass_b, b_height, sim_type, b_pulses):
-    # Find peaks:
-    peaks, _ = signal.find_peaks(lowpass_b, height=b_height, prominence=b_height)
+    peaks = detect_peaks(lowpass_b, mph=pm.b_findpeak_height, mpd=int(pm.b_findpeak_dist/dt), show=False)
 
     # Find start and end points:
     start = np.zeros(peaks.size,dtype=int)
@@ -154,7 +96,7 @@ def find_peaks(t, lowpass_b, b_height, sim_type, b_pulses):
                 evoked_peaks = np.array([-1])
                 for i in range(len(b_pulses_onset)):
                     for j in range(peaks.size):
-                        if (t[start[j]] - b_pulses_onset[i]) > 0 and (t[start[j]] - b_pulses_onset[i]) <= 20:
+                        if (t[start[j]] - b_pulses_onset[i]) > 0 and (t[start[j]] - b_pulses_onset[i]) <= 50:
                             b_pulses_success[i] = 1
                             evoked_peaks = np.append(evoked_peaks,j)
                 if len(evoked_peaks) > 1:
@@ -181,39 +123,35 @@ def find_peaks(t, lowpass_b, b_height, sim_type, b_pulses):
                 peak_data = False
 
         peak_data = start, end, duration_prev, duration_next, IEI_prev, IEI_next
-    else:
+    if peaks.size == 0:
+        print('ERROR: Failed finding peaks')
         peak_data = False
         b_pulses_onset = 0
         b_pulses_success = 0
 
-    return peak_data, b_pulses_onset, b_pulses_success
+    fit_params = np.array([0,0,0])
+    if peak_data != False:
+        peak_start, peak_end, peaks_duration_prev, peaks_duration_next, peaks_IEI_prev, peaks_IEI_next = peak_data
+        try: fit_params, _ = curve_fit(fit_func, peaks_IEI_prev, peaks_duration_prev,p0=(2,2,68), bounds=(0,[100, 100, 100]))
+        except: None
 
-def fit_exp(peaks_duration, peaks_IEI):
-    try:
-        fit_success = True
-        fit_params, _ = curve_fit(fit_func, peaks_IEI, peaks_duration, p0=(2,2,68), bounds=(0,[100, 100, 100]))
-    except:
-        fit_success = False
-        fit_params = None
+    if peak_data != False:
+        print('Minimum IEI is %.1lf ms'%(np.min(peaks_IEI_prev)*1000))
+        print('Peak incidence = %.2lf Hz'%(len(peak_start)/simtime))
+        print('Time constant is %.1lf ms'%(1e3/fit_params[1]))
+        print('previous IEI = (%.2lf +/- %.2lf) s'%(np.mean(peaks_IEI_prev),np.std(peaks_IEI_prev)))
+        print('next IEI = (%.2lf +/- %.2lf) s'%(np.mean(peaks_IEI_next),np.std(peaks_IEI_next)))
+        c, p = pearsonr(peaks_IEI_prev,peaks_duration_prev)
+        print('Correlation with Previous IEI: c = %.3lf, p = %.2e'%(c,p))
+        c, p = pearsonr(peaks_IEI_next,peaks_duration_next)
+        print('Correlation with Next IEI: c = %.3lf, p = %.2e'%(c,p))
 
-    return fit_success, fit_params
+    return lowpass_b, peak_data, fit_params, b_pulses_onset, b_pulses_success
 
-def filter_signal(trace_spont, dt, highcut):
-    # filter trace with Butterworth filter
-    fs = 1e3/dt
-    lowcut = -1.
-    b, a = create_butter_bandpass(lowcut, highcut, fs, order=2, btype='low')
-    filt_trace = signal.filtfilt(b, a, trace_spont)
+def plot_one_side(fig, grid, sim_type, tstart, tstop, t, b, e, b_pulses, lowpass_b, peak_data, fit_params, b_pulses_onset, b_pulses_success):
 
-    return filt_trace
-
-
-def plot_one_side(fig, grid, sim_type, tstart, tstop, t, b, e, b_pulses, lowpass_b, peak_data, fit_data, b_pulses_onset, b_pulses_success):
-
-    if len(peak_data) == 6:
+    if peak_data != False:
         peaks_start, peaks_end, peaks_duration_prev, peaks_duration_next, peaks_IEI_prev, peaks_IEI_next = peak_data
-    if fit_data != False:
-        fit_success, fit_params = fit_data
 
     ax_t_B = fig.add_subplot(grid[0, 0:4])
     ax_t_e = fig.add_subplot(grid[1:3, 0:4])
@@ -252,7 +190,7 @@ def plot_one_side(fig, grid, sim_type, tstart, tstop, t, b, e, b_pulses, lowpass
 
     ax_t_B.plot(t, b, color='#3c3fef', lw=1.5)
     ax_t_B.plot(t, lowpass_b, color='black', lw=1.0)
-    if (sim_type == 'evoke') and (b_pulses.any() > 0):
+    if (sim_type == 'evoke') and (b_pulses.any() > 0) and (peak_data != False):
         ytop, ybottom = ax_t_B.get_ylim()
         ax_t_B.fill_between(t, ybottom, ytop, where = b_pulses > 0, facecolor='#d4b021')
         for i in range(len(b_pulses_onset)):
@@ -288,7 +226,7 @@ def plot_one_side(fig, grid, sim_type, tstart, tstop, t, b, e, b_pulses, lowpass
     ax_e_B.set_ylim([-0.1*B_ticks[-1],1.2*B_ticks[-1]])
     ax_e_B.set_xlabel('e', fontsize=pm.fonts)
 
-    if len(peak_data) == 6:
+    if peak_data != False:
 
         if sim_type is 'spont':
             ax_IEI_hist.set_title(r'\textbf{C1}',loc='left',x=-0.20,y=0.85,fontsize=pm.fonts)
@@ -303,9 +241,6 @@ def plot_one_side(fig, grid, sim_type, tstart, tstop, t, b, e, b_pulses, lowpass
         ax_IEI_hist.set_yticks([])
         ax_IEI_hist.set_yticklabels([])
 
-        if fit_success == True:
-            x_array = np.arange(np.min(peaks_IEI_prev),np.max(peaks_IEI_prev),0.01)
-
         if sim_type is 'spont':
             ax_prev.set_title(r'\textbf{D1}',loc='left',x=-0.15,y=0.95,fontsize=pm.fonts)
         else:
@@ -313,7 +248,9 @@ def plot_one_side(fig, grid, sim_type, tstart, tstop, t, b, e, b_pulses, lowpass
 
         ax_prev.plot(peaks_IEI_prev, peaks_duration_prev, 'k.', ms=3)
         ax_prev.axvline(np.min(peaks_IEI_prev), linewidth=1, color='k', linestyle='--')
-        if fit_success == True: ax_prev.plot(x_array,fit_func(x_array,*fit_params),color='red', lw=1.5)
+        if fit_params.all != 0:
+            x_array = np.arange(np.min(peaks_IEI_prev),np.max(peaks_IEI_prev),0.01)
+            ax_prev.plot(x_array,fit_func(x_array,*fit_params),color='red', lw=1.5)
         ax_prev.set_xlabel('previous IEI [s]',fontsize=pm.fonts)
         if sim_type is 'spont': ax_prev.set_ylabel('FWHM [ms]',fontsize=pm.fonts)
         ax_prev.set_ylim([30,110])
@@ -331,3 +268,44 @@ def plot_one_side(fig, grid, sim_type, tstart, tstop, t, b, e, b_pulses, lowpass
         ax_next.set_xlim([0,3])
         ax_next.set_xticks([0,1,2])
         ax_next.set_xticklabels([0,1,2],fontsize=pm.fonts)
+
+def plot_fig_12():
+    print('============Spontaneous Events============')
+    data_spont = np.load('results/noisy_rate_model_long_sim_spont.npz', encoding='latin1', allow_pickle=True)
+    dict_spont = dict(zip(("{}".format(k) for k in data_spont), (data_spont[k] for k in data_spont)))
+    t_spont = dict_spont['t']
+    b_spont = dict_spont['b']
+    e_spont = dict_spont['e']
+    b_pulses_spont = dict_spont['b_pulses']
+
+    lowpass_b_spont, peak_data_spont, fit_data_spont, _, _ = get_peak_data(t_spont, b_spont, b_pulses_spont, 'spont')
+
+    print('==============Evoked Events===============')
+    data_evoke = np.load('results/noisy_rate_model_long_sim_evoke.npz', encoding='latin1', allow_pickle=True)
+    dict_evoke = dict(zip(("{}".format(k) for k in data_evoke), (data_evoke[k] for k in data_evoke)))
+    t_evoke = dict_evoke['t']
+    b_evoke = dict_evoke['b']
+    e_evoke = dict_evoke['e']
+    b_pulses_evoke = dict_evoke['b_pulses']
+
+    lowpass_b_evoke, peak_data_evoke, fit_data_evoke, b_pulses_onset, b_pulses_success = get_peak_data(t_evoke, b_evoke, b_pulses_evoke, 'evoke')
+
+    fig_width = 17.6/2.54
+    fig_height = 0.4*17.6/2.54
+
+    fig = plt.figure(figsize=(fig_width,fig_height))
+    gs = gridspec.GridSpec(5, 13, width_ratios=[1,1,1,1,1,1,0.2,1,1,1,1,1,1])
+    gs_spont = gridspec.GridSpecFromSubplotSpec(5, 6, subplot_spec=gs[:, 0:6], height_ratios=[0.75,0.20,0.40,0.25,0.75])
+    gs_evoke = gridspec.GridSpecFromSubplotSpec(5, 6, subplot_spec=gs[:, 7:13], height_ratios=[0.75,0.20,0.40,0.25,0.75])
+
+    t_plot_start = 195.4*1e3
+    t_plot_stop = 196.9*1e3
+
+    plot_one_side(fig, gs_spont, 'spont', t_plot_start, t_plot_stop,\
+                    t_spont, b_spont, e_spont, b_pulses_spont, lowpass_b_spont, peak_data_spont, fit_data_spont, None, None)
+    plot_one_side(fig, gs_evoke, 'evoke', t_plot_start, t_plot_stop,\
+                    t_evoke, b_evoke, e_evoke, b_pulses_evoke, lowpass_b_evoke, peak_data_evoke, fit_data_evoke, b_pulses_onset, b_pulses_success)
+
+    plt.subplots_adjust(wspace=1., hspace=0.2)
+
+    fig.savefig('results/fig_rate_model_noise.png',bbox_inches='tight', dpi=300)

@@ -20,9 +20,11 @@ poisson_B = 0
 poisson_A = 0
 
 # Filter B at a cutoff frequency to find peaks:
-b_findpeak_cutoff = 15
+b_findpeak_cutoff = 15 # Hz
 # B peak detection height:
-b_findpeak_height = 60
+b_findpeak_height = 60 # 1/s
+# B peak detection distance:
+b_findpeak_dist = 100 # ms
 
 P_0 = 0.
 B_0 = 0.
@@ -130,7 +132,7 @@ def set_default_parameters(plasticity_type='default'):
     if (plasticity_type == 'default') or (plasticity_type == 'extra_dpr'):
         e_0 = 0.8
         tau_f = 250; eta_f = 0.00015;
-        amp = 0.125
+        amp = 1/8
         if plasticity_type == 'default':
             d_ab_on = 1; d_pb_on = 0; f_ap_on = 0;
         elif plasticity_type == 'extra_dpr':
@@ -139,7 +141,7 @@ def set_default_parameters(plasticity_type='default'):
     elif plasticity_type == 'facil_only':
         e_0 = 0.5;
         tau_f = 250; eta_f = 0.00015;
-        amp = 0.15
+        amp = 1/7
         d_ab_on = 0; d_pb_on = 0; f_ap_on = 1;
 
     # synaptic weights

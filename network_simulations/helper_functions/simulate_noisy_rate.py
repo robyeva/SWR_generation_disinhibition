@@ -255,7 +255,6 @@ def run_fig_12():
     np.random.seed(pm.seed)
     sim_out = solve_model(t,y0,noise_args,(0,0,0))
     t, p, b, a, e, z, noises, noise_currents, b_pulses = sim_out
-    lowpass_b, peak_data, fit_data, b_pulses_onset, b_pulses_success = get_peak_data(t, b, b_pulses, 'spont')
 
     dic_to_save = {'t': t[::pm.compress_step],
                    'p': p[::pm.compress_step],
@@ -265,12 +264,7 @@ def run_fig_12():
                    'z': z[::pm.compress_step],
                    'noises': noises[::pm.compress_step],
                    'noise_currents': noise_currents[::pm.compress_step],
-                   'b_pulses': b_pulses[::pm.compress_step],
-                   'lowpass_b': lowpass_b[::pm.compress_step],
-                   'peak_data': peak_data,
-                   'fit_data': fit_data,
-                   'b_pulses_onset': b_pulses_onset,
-                   'b_pulses_success': b_pulses_success
+                   'b_pulses': b_pulses[::pm.compress_step]
                    }
 
     np.savez_compressed('results/noisy_rate_model_long_sim_spont', **dic_to_save)
@@ -278,7 +272,6 @@ def run_fig_12():
     np.random.seed(pm.seed)
     sim_out = solve_model(t,y0,noise_args,pulse_args)
     t, p, b, a, e, z, noises, noise_currents, b_pulses = sim_out
-    lowpass_b, peak_data, fit_data, b_pulses_onset, b_pulses_success = get_peak_data(t, b, b_pulses, 'evoke')
 
     dic_to_save = {'t': t[::pm.compress_step],
                    'p': p[::pm.compress_step],
@@ -288,12 +281,7 @@ def run_fig_12():
                    'z': z[::pm.compress_step],
                    'noises': noises[::pm.compress_step],
                    'noise_currents': noise_currents[::pm.compress_step],
-                   'b_pulses': b_pulses[::pm.compress_step],
-                   'lowpass_b': lowpass_b[::pm.compress_step],
-                   'peak_data': peak_data,
-                   'fit_data': fit_data,
-                   'b_pulses_onset': b_pulses_onset,
-                   'b_pulses_success': b_pulses_success
+                   'b_pulses': b_pulses[::pm.compress_step]
                    }
 
     np.savez_compressed('results/noisy_rate_model_long_sim_evoke', **dic_to_save)
