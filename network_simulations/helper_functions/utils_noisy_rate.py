@@ -139,8 +139,10 @@ def get_peak_data(t, b, b_pulses, sim_type):
         print('Minimum IEI is %.1lf ms'%(np.min(peaks_IEI_prev)*1000))
         print('Peak incidence = %.2lf Hz'%(len(peak_start)/simtime))
         print('Time constant is %.1lf ms'%(1e3/fit_params[1]))
-        print('previous IEI = (%.2lf +/- %.2lf) s'%(np.mean(peaks_IEI_prev),np.std(peaks_IEI_prev)))
-        print('next IEI = (%.2lf +/- %.2lf) s'%(np.mean(peaks_IEI_next),np.std(peaks_IEI_next)))
+        if sim_type == 'spont':
+            print('IEI = (%.2lf +/- %.2lf) s'%(np.mean(peaks_IEI_prev),np.std(peaks_IEI_prev)))
+        elif sim_type == 'evoke':
+            print('IEI = (%.2lf +/- %.2lf) s'%(np.mean(np.concatenate((peaks_IEI_prev,peaks_IEI_next))),np.std(np.concatenate((peaks_IEI_prev,peaks_IEI_next)))))
         c, p = pearsonr(peaks_IEI_prev,peaks_duration_prev)
         print('Correlation with Previous IEI: c = %.3lf, p = %.2e'%(c,p))
         c, p = pearsonr(peaks_IEI_next,peaks_duration_next)
@@ -232,10 +234,12 @@ def plot_one_side(fig, grid, sim_type, tstart, tstop, t, b, e, b_pulses, lowpass
 
         if sim_type is 'spont':
             ax_IEI_hist.set_title(r'\textbf{C1}',loc='left',x=-0.22,y=0.95,fontsize=pm.fonts)
+            ax_IEI_hist.hist(peaks_IEI_prev,bins=30,color='gray')
         else:
             ax_IEI_hist.set_title(r'\textbf{C2}',loc='left',x=-0.22,y=0.95,fontsize=pm.fonts)
+            ax_IEI_hist.hist(np.concatenate((peaks_IEI_prev,peaks_IEI_next)),bins=30,color='gray')
 
-        ax_IEI_hist.hist(peaks_IEI_prev,bins=30,color='gray')
+
         ax_IEI_hist.set_title('IEI [s]', y=0.95, fontsize=pm.fonts)
         ax_IEI_hist.set_xlim([0,3])
         ax_IEI_hist.set_xticks([0,1,2])
