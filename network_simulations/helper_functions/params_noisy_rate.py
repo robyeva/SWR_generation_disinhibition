@@ -5,7 +5,7 @@ compress_step = 10
 
 seed = 123
 
-sim_dt = 0.1
+sim_dt = 0.1 # 0.1 ms
 
 # Periodic square inputs:
 B_pulses_per = 2 #secs
@@ -20,9 +20,9 @@ poisson_B = 0
 poisson_A = 0
 
 # Filter B at a cutoff frequency to find peaks:
-b_findpeak_cutoff = 15 # Hz
+b_findpeak_cutoff = 10 # Hz
 # B peak detection height:
-b_findpeak_height = 60 # 1/s
+b_findpeak_height = 45 # 1/s
 # B peak detection distance:
 b_findpeak_dist = 100 # ms
 
@@ -131,7 +131,6 @@ def set_default_parameters(plasticity_type='default'):
     # synaptic plasticity:
     if (plasticity_type == 'default') or (plasticity_type == 'extra_dpr'):
         e_0 = 0.8
-        tau_f = 250; eta_f = 0.00015;
         amp = 1/8
         if plasticity_type == 'default':
             d_ab_on = 1; d_pb_on = 0; f_ap_on = 0;
@@ -140,7 +139,6 @@ def set_default_parameters(plasticity_type='default'):
 
     elif plasticity_type == 'facil_only':
         e_0 = 0.5;
-        tau_f = 250; eta_f = 0.00015;
         amp = 1/7
         d_ab_on = 0; d_pb_on = 0; f_ap_on = 1;
 
@@ -163,8 +161,13 @@ def set_default_parameters(plasticity_type='default'):
 
     # time constants (ms)
     tau_p = 3; tau_b = 2; tau_a = 6;
-    tau_d = 250; eta_d = 0.00018 # (ms⁻¹)
-    z_max = 1
+
+    # synaptic platicity
+    tau_d = 250; # (ms)
+    eta_d = 0.18;
+    tau_f = 230; # (ms)
+    eta_f = 0.32;
+    z_max = 1;
 
     P_freq = 1.94; B_freq = 1.32; A_freq = 12.56;
     poisson_PP = get_noise_params(P_freq,p_PP,N_P,g_PP,E_rev_P,V_P,amp)

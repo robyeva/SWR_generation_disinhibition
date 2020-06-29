@@ -111,7 +111,8 @@ def da(t,dt,a,*args):
 def de(t,dt,e,*args):
     p, b, a = args
     if (pm.d_ab_on == 1) or (pm.d_pb_on == 1):
-        y = ((1-e)/pm.tau_d) - pm.eta_d*b*e # depression
+         # time is simulated in ms, so b firing rate must be scaled by 1e-3
+        y = ((1-e)/pm.tau_d) - pm.eta_d*b*1e-3*e
     else:
         y = 0.0
     return y
@@ -119,7 +120,8 @@ def de(t,dt,e,*args):
 def dz(t,dt,z,*args):
     p, b, a = args
     if pm.f_ap_on == 1:
-        y = (-z/pm.tau_f)+pm.eta_f*p*(pm.z_max-z) # depression
+        # time is simulated in ms, so p firing rate must be scaled by 1e-3
+        y = (-z/pm.tau_f)+pm.eta_f*p*1e-3*(pm.z_max-z)
     else:
         y = 0.0
     return y
