@@ -1289,8 +1289,8 @@ def plot_facilitationPtoA_effects(filename, simtime_current=10 * 60 * second, t_
     b_facil = dict_facil['b']
     a_facil = dict_facil['a']
     z_facil = dict_facil['z']
-    tstart = 1*1e3 # sec
-    tstop = 9*1e3 # sec
+    tstart = 0.5*1e3 # sec
+    tstop = 8.5*1e3 # sec
 
     home_dir = os.path.dirname(os.path.abspath(__file__)) + '/../../'
     bs = bif.load_bifurcations(home_dir + 'bifurcation_analysis/bifurcation_diagrams/1param/','z',0,1)
