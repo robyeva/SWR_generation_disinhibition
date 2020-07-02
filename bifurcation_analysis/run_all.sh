@@ -17,7 +17,4 @@ python fig_bifurcations_1d.py
 echo "Creating fig_bifurcations_2d.eps ..."
 python fig_bifurcations_2d.py
 
-# Create Supplementary Figures
-echo "Creating fig_bif_extra_depr.eps and fig_bif_extra_facil.eps ..."
-python fig_extra_synapses.py
 popd
