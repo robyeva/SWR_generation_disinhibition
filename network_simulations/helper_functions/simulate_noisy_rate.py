@@ -314,7 +314,7 @@ def solve_model(time, init0, pulse_args):
     return t, p, b, a, e, z, noises, noise_currents, b_pulses
 
 ''' Long simulations for Fig. 12 '''
-def run_fig_12():
+def run_long_noisy_rate_spont_and_evoked():
 
     # Set model parameters:
     pm.set_parameters()
@@ -377,7 +377,7 @@ def run_fig_12():
     np.savez_compressed('results/noisy_rate_model_long_sim_evoke', **dic_to_save)
 
 ''' Short simulations for Fig. 13E '''
-def run_fig_13E():
+def run_short_noisy_rate_extra_dpr():
 
     ''' Default model (B->A depression only) '''
 
@@ -440,7 +440,7 @@ def run_fig_13E():
     np.savez_compressed('results/noisy_rate_model_short_sim_extra_dpr', **dic_to_save)
 
 ''' Short simulation for Fig. 15D '''
-def run_fig_15D():
+def run_short_noisy_rate_facil_only():
 
     # Set model parameters:
     pm.set_parameters('facil_only')

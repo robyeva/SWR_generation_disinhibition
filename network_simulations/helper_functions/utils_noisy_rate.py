@@ -270,7 +270,7 @@ def get_peak_data(t, b, b_pulses, sim_type):
     return lowpass_b, peak_data, fit_params, b_pulses_onset, b_pulses_success
 
 
-def plot_one_side(fig, grid, sim_type, tstart, tstop, t, b, e, b_pulses, lowpass_b,\
+def plot_one_side_of_fig12(fig, grid, sim_type, tstart, tstop, t, b, e, b_pulses, lowpass_b,\
                     peak_data, fit_params, b_pulses_onset, b_pulses_success):
     ''' Plot one half of Fig. 12
     A) t vs. b and t vs. e
@@ -501,12 +501,12 @@ def plot_fig_12():
     t_plot_stop = 196.9*1e3
 
     # Subplots for "spontaneous" events:
-    plot_one_side(fig, gs_spont, 'spont', t_plot_start, t_plot_stop,\
+    plot_one_side_of_fig12(fig, gs_spont, 'spont', t_plot_start, t_plot_stop,\
                     t_spont, b_spont, e_spont, b_pulses_spont, lowpass_b_spont,\
                      peak_data_spont, fit_data_spont, None, None)
 
     # Subplots for "evoked" events:
-    plot_one_side(fig, gs_evoke, 'evoke', t_plot_start, t_plot_stop,\
+    plot_one_side_of_fig12(fig, gs_evoke, 'evoke', t_plot_start, t_plot_stop,\
                     t_evoke, b_evoke, e_evoke, b_pulses_evoke, lowpass_b_evoke,\
                      peak_data_evoke, fit_data_evoke, b_pulses_onset, b_pulses_success)
 
