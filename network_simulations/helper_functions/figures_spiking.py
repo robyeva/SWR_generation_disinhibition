@@ -88,64 +88,78 @@ def fig_bistability_manuscript(filename, save_targets=True):
 
     xlim_bistable = [x_lim_start, x_lim_end]
 
-    outer = gridspec.GridSpec(5, 6, height_ratios=[1, 1, 1, 1, 1])
-    outer.update(wspace=0.8, hspace=0.5)
-    gs2 = gridspec.GridSpecFromSubplotSpec(5, 3, subplot_spec=outer[:, :], hspace=.08, wspace=0.08)
+    gs2 = gridspec.GridSpec(5, 3, height_ratios=[1, 1, 1, 1, 1])
+    gs2.update(wspace=0.8, hspace=0.08)
 
     # ============================================== #
     # =================== P cells ================== #
     # ============================================== #
-    ax = subplot(gs2[0, 0:3])
-    plt.plot(t_array, p_array, '#ef3b53', label='P', lw=2.5)
-    ylim(-5, np.max(p_array) + 2)
+    ax = subplot(gs2[0, :])
+    plt.plot(t_array, p_array, '#ef3b53', label='P', lw=1.5)
+    axvline(x= 1499, linewidth=1.2, color='k', linestyle='--', zorder=-3)
+    axvline(x= 3520, linewidth=1.2, color='k', linestyle='--', zorder=-3)
+    ylim(0, np.max(p_array) + 2)
     yticks(np.arange(0, np.max(p_array), 50))
+    plt.setp(ax.get_yticklabels()[1::2], visible=False)
     adjust_yaxis(ax, my_size)
     adjust_xaxis(ax, xlim_bistable, my_size)
+    ax.spines['bottom'].set_visible(True)
 
-    # add a textbox with A, B
+    # add a textbox with SWR / non-SWR states
     font0 = FontProperties()
     my_font = font0.copy()
-    textstr = r'\textbf{A}'
+    textstr = r'\textbf{non-SWR}'
     props = dict(facecolor='none', edgecolor='none')
-    ax.annotate(textstr, xy=(0.095, 1.05), xytext=(0.095, 1.15), xycoords='axes fraction',
-                fontsize=my_size - 2, ha='center', va='bottom',
+    ax.annotate(textstr, xy=(0.1, 1.05), xytext=(0.1, 1.15), xycoords='axes fraction',
+                fontsize=my_size, ha='center', va='bottom',
                 bbox=dict(boxstyle='square', fc='white', ec='white'),
-                arrowprops=dict(arrowstyle='-[, widthB=3.6, lengthB=.2', lw=2.0))
+                arrowprops=dict(arrowstyle='-[, widthB=2.5, lengthB=.2', lw=1.5))
 
-    textstr = r'\textbf{B}'
+    textstr = r'\textbf{SWR}'
     props = dict(facecolor='none', edgecolor='none')
-    ax.annotate(textstr, xy=(0.295, 1.05), xytext=(0.295, 1.15), xycoords='axes fraction',
-                fontsize=my_size - 2, ha='center', va='bottom',
+    ax.annotate(textstr, xy=(0.3, 1.05), xytext=(0.3, 1.15), xycoords='axes fraction',
+                fontsize=my_size, ha='center', va='bottom',
                 bbox=dict(boxstyle='square', fc='white', ec='white'),
-                arrowprops=dict(arrowstyle='-[, widthB=3.9, lengthB=.2', lw=2.0))
+                arrowprops=dict(arrowstyle='-[, widthB=2.8, lengthB=.2', lw=1.5))
 
     # ============================================== #
     # =================== B cells ================== #
     # ============================================== #
-    ax = subplot(gs2[1, 0:3])
-    plot(t_array, b_array, '#3c3fef', label='B', lw=2.5)
-    ylim(-5, np.max(b_array) + 2)
+    ax = subplot(gs2[1, :])
+    plot(t_array, b_array, '#3c3fef', label='B', lw=1.5)
+    axvline(x= 1499, linewidth=1.2, color='k', linestyle='--', zorder=-3)
+    axvline(x= 3520, linewidth=1.2, color='k', linestyle='--', zorder=-3)
+
+    ylim(0, np.max(b_array) + 2)
     yticks(np.arange(0, np.max(b_array), 50))
     plt.setp(ax.get_yticklabels()[1::2], visible=False)
     adjust_yaxis(ax, my_size)
     adjust_xaxis(ax, xlim_bistable, my_size)
+    ax.spines['bottom'].set_visible(True)
 
     # ============================================== #
     # =================== A cells ================== #
     # ============================================== #
-    ax = subplot(gs2[2, 0:3])
-    plot(t_array, a_array, '#0a9045', label='A', lw=2.5)
-    ylim(-5, np.max(a_array) + 2)
+    ax = subplot(gs2[2, :])
+    plot(t_array, a_array, '#0a9045', label='A', lw=1.5)
+    axvline(x= 1499, linewidth=1.2, color='k', linestyle='--', zorder=-3)
+    axvline(x= 3520, linewidth=1.2, color='k', linestyle='--', zorder=-3)
+
+    ylim(0, np.max(a_array) + 2)
     yticks(np.arange(0, np.max(a_array), 20))
     adjust_xaxis(ax, xlim_bistable, my_size)
     adjust_yaxis(ax, my_size)
+    ax.spines['bottom'].set_visible(True)
 
     # ============================================== #
     # ============ injected current ================ #
     # ============================================== #
-    ax = subplot(gs2[3, 0:3])
-    plot(t_array, extracurr_array, '#d4b021', label='I', lw=2.5)
+    ax = subplot(gs2[3, :])
+    plot(t_array, extracurr_array, '#d4b021', label='I', lw=1.5)
+    axvline(x= 1499, linewidth=1.2, color='k', linestyle='--', zorder=-3)
+    axvline(x= 3520, linewidth=1.2, color='k', linestyle='--', zorder=-3)
     ylim(np.min(extracurr_array) - 0.1, np.max(extracurr_array) + 0.1)
+    yticks([-100, 0, 100])
     adjust_xaxis(ax, xlim_bistable, my_size)
     ylabel('\n'.join(wrap('Mean injected current [pA]', 18)), fontsize=my_size)
     adjust_yaxis(ax, my_size)
@@ -153,8 +167,10 @@ def fig_bistability_manuscript(filename, save_targets=True):
     # ============================================== #
     # ================= depression ================= #
     # ============================================== #
-    ax = subplot(gs2[4, 0:3])
-    plot(t_array, mean_depr_array, '#e67e22', label='d', lw=2.5)
+    ax = subplot(gs2[4, :])
+    plot(t_array, mean_depr_array, '#e67e22', label='d', lw=1.5)
+    axvline(x= 1499, linewidth=1.2, color='k', linestyle='--', zorder=-3)
+    axvline(x= 3520, linewidth=1.2, color='k', linestyle='--', zorder=-3)
     ylim(np.min(mean_depr_array) - 0.05, 1.05)
     yticks(np.arange(1., np.min(mean_depr_array), -0.2))
     yticks([0.2, 0.5, 0.8])
@@ -164,24 +180,21 @@ def fig_bistability_manuscript(filename, save_targets=True):
 
     # add scalebar
     ob = AnchoredHScaleBar(size=500, label="0.5 s", loc=3, frameon=False, extent=0,
-                           pad=1., sep=4, color="Black",
-                           borderpad=-0.5,
+                           pad=1.7, sep=4, color="Black",
+                           borderpad=-1.5,
                            my_size=my_size)  # pad and borderpad can be used to modify the position of the bar a bit
     ax.add_artist(ob)
 
-    # add arrow where stimulation is
-    ax.annotate("", xy=(warm_up_time, 0.0), xytext=(warm_up_time, -0.2), xycoords='data',
-                arrowprops=dict(arrowstyle="->", lw=2.))
 
     # add a common y label for population rate
-    fig.text(0.065, 0.7, 'Population rate [spikes/s]', va='center', ha='center', rotation='vertical', fontsize=my_size)
+    fig.text(0.04, 0.7, 'Population rate [spikes/s]', va='center', ha='center', rotation='vertical', fontsize=my_size)
 
     savefig(os.path.join(path_folder, filename + '_bistability.pdf'), dpi=200, format='pdf', bbox_inches='tight')
 
 
-# FIG 6
-def figure_6(filename, fraction_stim=0.6, for_defense=False):
-    """Fig 6 manuscript. Includes raster plots and population activity, plus synaptic efficacy in the spontaneous
+# FIG 9
+def figure_9(filename, fraction_stim=0.6):
+    """Fig 9 manuscript. Includes raster plots and population activity, plus synaptic efficacy in the spontaneous
     scenario (panel A) and in case of activation of P cells (panel B), B cells (panel C), or inactivation of A cells
     (panel D).
     :param filename: str
@@ -191,7 +204,7 @@ def figure_6(filename, fraction_stim=0.6, for_defense=False):
     """
 
     filename_saved = os.path.join(path_folder, filename +
-                                  '_sim_fig6_fraction_' + str(fraction_stim) + '.npz')
+                                  '_sim_fig9_fraction_' + str(fraction_stim) + '.npz')
     data = np.load(filename_saved, encoding='latin1', allow_pickle=True)  # all elements are unitless (/Hz and ms)
     info_dic = dict(zip(("{}".format(k) for k in data), (data[k] for k in data)))
 
@@ -202,22 +215,19 @@ def figure_6(filename, fraction_stim=0.6, for_defense=False):
     mean_depr_array = info_dic['mean_depr_array']
     warm_up_time = info_dic['warm_up_time']
     time_with_curr = info_dic['time_with_curr']
-    sigma_P = info_dic['sigma_P']
-    sigma_B = info_dic['sigma_B']
-    sigma_A = info_dic['sigma_A']
     spikes_dic = info_dic['spikes_dic'].item()
     mean_B_input_p = info_dic['mean_B_input_p']
     compress_step_indices = int(info_dic['compress_step_indices'])
 
-    fig = plt.figure(figsize=[14, 11])
-    my_size = 16
+    fig = plt.figure(figsize=[17.6/2.54, 4./5*17.6/2.54])
+    my_size = 9
+    plt.rc('text.latex', preamble=r'\usepackage{cmbright}')
     plt.rc('text', usetex=True)
-    rc('font', size=16)
     # xlim used for stimulation case
     x_lim_start = warm_up_time - 100  # ms
     x_lim_end = warm_up_time + 200  # ms
     xlim_stim = [x_lim_start, x_lim_end]
-    xlim_spont = [150, 450]     # NOTE: specific to the simulation with seed!!
+    xlim_spont = [0, 300]     # NOTE: specific to the simulation with seed!!
 
     outer = gridspec.GridSpec(8, 4, height_ratios=[1, 1, 1, 1, 1, 1, 1, 1])
     gs1 = gridspec.GridSpecFromSubplotSpec(3, 4, subplot_spec=outer[0:3, :], hspace=0.0, wspace=0.08)
@@ -227,10 +237,11 @@ def figure_6(filename, fraction_stim=0.6, for_defense=False):
     idx_c = 0
     ax = subplot(gs1[0, idx_c])
     ip, tp = spikes_dic['P_' + str(idx_c)]
-    plt.scatter(tp / ms, ip, marker='.', color='#ef3b53', s=0.45, rasterized=True)
+    plt.scatter(tp / ms, ip, marker='.', color='#ef3b53', s=0.25, rasterized=True)
     xlim(xlim_spont)
     plt.axis('off')
-    ylim([0, 8200])
+    # show first 50 cells
+    ylim([0, 50])
 
     font0 = FontProperties()
     my_font = font0.copy()
@@ -242,18 +253,19 @@ def figure_6(filename, fraction_stim=0.6, for_defense=False):
     textstr = r'\textbf{A}'
     props = dict(facecolor='none', edgecolor='none')
     ax.text(0.0, 1.45, textstr, transform=ax.transAxes, fontsize=my_size + 4,
-            verticalalignment='top', bbox=props)
+            verticalalignment='top', bbox=props, size = my_size)
 
     ax = subplot(gs1[1, idx_c])
     ib, tb = spikes_dic['B_' + str(idx_c)]
-    plt.scatter(tb / ms, ib, marker='.', color='#3c3fef', s=0.75, rasterized=True)
+    plt.scatter(tb / ms, ib, marker='.', color='#3c3fef', s=0.45, rasterized=True)
     xlim(xlim_spont)
-    ylim([0, 135])
+    # show first 50 cells
+    ylim([0, 50])
     plt.axis('off')
 
     ax = subplot(gs1[2, idx_c])
     ia, ta = spikes_dic['A_' + str(idx_c)]
-    plt.scatter(ta / ms, ia, marker='.', color='#0a9045', s=0.85, rasterized=True)
+    plt.scatter(ta / ms, ia, marker='.', color='#0a9045', s=0.55, rasterized=True)
     xlim(xlim_spont)
     ylim([0, 50])
     plt.axis('off')
@@ -261,7 +273,7 @@ def figure_6(filename, fraction_stim=0.6, for_defense=False):
     # Population FR
     # P cells
     ax = subplot(gs2[0, idx_c])
-    plt.plot(t_array[idx_c, :], p_array[idx_c, :], '#ef3b53', label='P', lw=2.5)
+    plt.plot(t_array[idx_c, :], p_array[idx_c, :], '#ef3b53', label='P', lw=1.5)
     ylim(-5, np.max(p_array) + 2)
     yticks(np.arange(0, np.max(p_array), 50))
     adjust_yaxis(ax, my_size)
@@ -269,7 +281,7 @@ def figure_6(filename, fraction_stim=0.6, for_defense=False):
 
     # B cells
     ax = subplot(gs2[1, idx_c])
-    plot(t_array[idx_c, :], b_array[idx_c, :], '#3c3fef', label='B', lw=2.5)
+    plot(t_array[idx_c, :], b_array[idx_c, :], '#3c3fef', label='B', lw=1.5)
     ylim(-5, np.max(b_array) + 2)
     yticks(np.arange(0, np.max(b_array), 50))
     plt.setp(ax.get_yticklabels()[1::2], visible=False)
@@ -278,17 +290,18 @@ def figure_6(filename, fraction_stim=0.6, for_defense=False):
 
     # A cells
     ax = subplot(gs2[2, idx_c])
-    plot(t_array[idx_c, :], a_array[idx_c, :], '#0a9045', label='A', lw=2.5)
+    plot(t_array[idx_c, :], a_array[idx_c, :], '#0a9045', label='A', lw=1.5)
     ylim(-5, np.max(a_array) + 2)
+    yticks(np.arange(0, np.max(a_array), 20))
     adjust_yaxis(ax, my_size)
     adjust_xaxis(ax, xlim_spont, my_size)
 
     # depression
     ax = subplot(gs2[3, idx_c])
-    plot(t_array[idx_c, :], mean_depr_array[idx_c, :], '#e67e22', label='d', lw=2.5)
+    plot(t_array[idx_c, :], mean_depr_array[idx_c, :], '#e67e22', label='d', lw=1.5)
     ylim(np.min(mean_depr_array) - 0.05, 1.05)
     yticks(np.arange(1., np.min(mean_depr_array), -0.2))
-    plt.setp(ax.get_yticklabels()[1::2], visible=False)
+    plt.setp(ax.get_yticklabels()[::2], visible=False)
     adjust_yaxis(ax, my_size)
     adjust_xaxis(ax, xlim_spont, my_size)
     ylabel('\n'.join(wrap('Synaptic efficacy', 10)), fontsize=my_size)
@@ -302,17 +315,17 @@ def figure_6(filename, fraction_stim=0.6, for_defense=False):
     highcut = 180
     b, a = create_butter_bandpass(lowcut, highcut, fs, order=2)
     y_p = filtfilt(b, a, -mean_B_input_p[idx_c, :])
-    plot(t_array[idx_c, :], y_p, '#3c3fef', lw=1.5)
+    plot(t_array[idx_c, :], y_p, '#3c3fef', lw=1.)
     ylim([-120, 120])
+    plt.setp(ax.get_yticklabels()[::2], visible=False)
     adjust_yaxis(ax, my_size)
     adjust_xaxis(ax, xlim_spont, my_size)
     ylabel('\n'.join(wrap('Band-pass LFP [a.u.]', 11)), fontsize=my_size)
 
     # add scalebar
     ob = AnchoredHScaleBar(size=50, label="50 ms", loc=4, frameon=False, extent=0,
-                           pad=.0, sep=4, color="Black",
-                           borderpad=0.1,
-                           my_size=my_size)  # pad and borderpad can be used to modify the position of the bar a bit
+                           pad=.2, sep=4, color="Black",
+                           borderpad=0., my_size=my_size)   # pad and borderpad can be used to modify the position of the bar a bit
     ax.add_artist(ob)
 
     for curr_to_pop, idx_c, text_letter in zip(['P', 'B', 'A'], [0, 1, 2],
@@ -320,9 +333,9 @@ def figure_6(filename, fraction_stim=0.6, for_defense=False):
         # ============= raster ALL cells =============== #
         ax = subplot(gs1[0, idx_c + 1])
         ip, tp = spikes_dic['P_' + str(idx_c)]
-        plt.scatter(tp / ms, ip, marker='.', color='#ef3b53', s=0.45, rasterized=True)
+        plt.scatter(tp / ms, ip, marker='.', color='#ef3b53', s=0.25, rasterized=True)
         xlim(xlim_stim)
-        ylim([0, 8200])
+        ylim([0, 50])
         plt.axis('off')
         add_sign_of_stimulation(ax, warm_up_time, time_with_curr)
 
@@ -330,35 +343,35 @@ def figure_6(filename, fraction_stim=0.6, for_defense=False):
         font0 = FontProperties()
         my_font = font0.copy()
         if curr_to_pop in ['P', 'B']:
-            textstr = curr_to_pop + ' activation'
+            textstr = '$' + curr_to_pop + '$ activation'
         else:
-            textstr = 'A inactivation'
+            textstr = '$A$ inactivation'
         props = dict(facecolor='none', edgecolor='none')
         ax.text(0.3, 1.3, textstr, transform=ax.transAxes, fontsize=my_size, fontproperties=my_font,
                 verticalalignment='top', bbox=props)
 
         props = dict(facecolor='none', edgecolor='none')
         ax.text(0.0, 1.45, text_letter, transform=ax.transAxes, fontsize=my_size + 4,
-                verticalalignment='top', bbox=props)
+                verticalalignment='top', bbox=props, size=my_size)
 
         ax = subplot(gs1[1, idx_c + 1])
         ib, tb = spikes_dic['B_' + str(idx_c)]
-        plt.scatter(tb / ms, ib, marker='.', color='#3c3fef', s=0.75, rasterized=True)
+        plt.scatter(tb / ms, ib, marker='.', color='#3c3fef', s=0.45, rasterized=True)
         xlim(xlim_stim)
-        ylim([0, 135])
+        ylim([0, 50])
         plt.axis('off')
         add_sign_of_stimulation(ax, warm_up_time, time_with_curr)
 
         ax = subplot(gs1[2, idx_c + 1])
         ia, ta = spikes_dic['A_' + str(idx_c)]
-        plt.scatter(ta / ms, ia, marker='.', color='#0a9045', s=0.85, rasterized=True)
+        plt.scatter(ta / ms, ia, marker='.', color='#0a9045', s=0.55, rasterized=True)
         xlim(xlim_stim)
         plt.axis('off')
         add_sign_of_stimulation(ax, warm_up_time, time_with_curr)
 
         # =================== P cells ================== #
         ax = subplot(gs2[0, idx_c + 1])
-        plt.plot(t_array[idx_c, :], p_array[idx_c, :], '#ef3b53', label='P', lw=2.5)
+        plt.plot(t_array[idx_c, :], p_array[idx_c, :], '#ef3b53', label='P', lw=1.5)
         ylim(-5, np.max(p_array) + 2)
         yticks(np.arange(0, np.max(p_array), 50))
         plt.setp(ax.get_yticklabels()[1::2], visible=False)
@@ -368,7 +381,7 @@ def figure_6(filename, fraction_stim=0.6, for_defense=False):
 
         # =================== B cells ================== #
         ax = subplot(gs2[1, idx_c + 1])
-        plot(t_array[idx_c, :], b_array[idx_c, :], '#3c3fef', label='B', lw=2.5)
+        plot(t_array[idx_c, :], b_array[idx_c, :], '#3c3fef', label='B', lw=1.5)
         ylim(-5, np.max(b_array) + 2)
         yticks(np.arange(0, np.max(b_array), 50))
         plt.setp(ax.get_yticklabels()[1::2], visible=False)
@@ -378,7 +391,7 @@ def figure_6(filename, fraction_stim=0.6, for_defense=False):
 
         # =================== A cells ================== #
         ax = subplot(gs2[2, idx_c + 1])
-        plot(t_array[idx_c, :], a_array[idx_c, :], '#0a9045', label='A', lw=2.5)
+        plot(t_array[idx_c, :], a_array[idx_c, :], '#0a9045', label='A', lw=1.5)
         ylim(-5, np.max(a_array) + 2)
         yticks(np.arange(0, np.max(a_array), 50))
         plt.axis('off')
@@ -387,10 +400,10 @@ def figure_6(filename, fraction_stim=0.6, for_defense=False):
 
         # ================= depression ================= #
         ax = subplot(gs2[3, idx_c + 1])
-        plot(t_array[idx_c, :], mean_depr_array[idx_c, :], '#e67e22', label='d', lw=2.5)
+        plot(t_array[idx_c, :], mean_depr_array[idx_c, :], '#e67e22', label='d', lw=1.5)
         ylim(np.min(mean_depr_array) - 0.05, 1.05)
         yticks(np.arange(1., np.min(mean_depr_array), -0.2))
-        plt.setp(ax.get_yticklabels()[1::2], visible=False)
+        plt.setp(ax.get_yticklabels()[::2], visible=False)
         plt.axis('off')
         add_sign_of_stimulation(ax, warm_up_time, time_with_curr)
         adjust_xaxis(ax, xlim_stim, my_size)
@@ -406,43 +419,36 @@ def figure_6(filename, fraction_stim=0.6, for_defense=False):
         highcut = 180
         b, a = create_butter_bandpass(lowcut, highcut, fs, order=2)
         y_p = filtfilt(b, a, -mean_B_input_p[idx_c, :])
-        plot(t_array[idx_c, :], y_p, '#3c3fef', lw=1.5)
+        plot(t_array[idx_c, :], y_p, '#3c3fef', lw=1.)
         ylim([-120, 120])
         plt.axis('off')
         add_sign_of_stimulation(ax, warm_up_time, time_with_curr)
         adjust_xaxis(ax, xlim_stim, my_size)
 
         ob = AnchoredHScaleBar(size=50, label="50 ms", loc=4, frameon=False, extent=0,
-                               pad=0., sep=4, color="Black",
-                               borderpad=0.1,
-                               my_size=my_size)  # pad and borderpad can be used to modify the position of the bar a bit
+                           pad=.2, sep=4, color="Black",
+                           borderpad=0., my_size=my_size) # pad and borderpad can be used to modify the position of the bar a bit
         ax.add_artist(ob)
 
         # add arrow where stimulation is
-        ax.annotate("", xy=(warm_up_time, -100.), xytext=(warm_up_time, -160.), xycoords='data',
-                    arrowprops=dict(arrowstyle="->", lw=2.))
+        ax.annotate("", xy=(warm_up_time, -100.), xytext=(warm_up_time, -200.), xycoords='data',
+                    arrowprops=dict(arrowstyle="->", lw=1.))
 
-    fig.text(0.085, 0.44, 'Population rate [spikes/s]', va='center', ha='center', rotation='vertical', fontsize=my_size)
+    fig.text(0.065, 0.44, 'Population rate [spikes/s]', va='center', ha='center', rotation='vertical', fontsize=my_size)
 
-    if for_defense:
-        fig.text(0.1, 0.86, 'P cells', va='center', ha='right', fontsize=my_size)
-        fig.text(0.1, 0.75, 'B cells', va='center', ha='right', fontsize=my_size)
-        fig.text(0.1, 0.65, 'A cells', va='center', ha='right', fontsize=my_size)
+    fig.text(0.1, 0.86, '$P$ cells', va='center', ha='right', fontsize=my_size)
+    fig.text(0.1, 0.75, '$B$ cells', va='center', ha='right', fontsize=my_size)
+    fig.text(0.1, 0.65, '$A$ cells', va='center', ha='right', fontsize=my_size)
 
-    else:
-        fig.text(0.12, 0.86, '$N_P = 8200$', va='center', ha='right', fontsize=my_size)
-        fig.text(0.12, 0.75, '$N_B = 135$', va='center', ha='right', fontsize=my_size)
-        fig.text(0.12, 0.65, '$N_A = 50$', va='center', ha='right', fontsize=my_size)
-
-    savefig(os.path.join(path_folder, filename + '_fig6' + '_fraction_' + str(
+    savefig(os.path.join(path_folder, filename + '_fig9' + '_fraction_' + str(
         fraction_stim) + '.png'),
             dpi=300, format='png', bbox_inches='tight')
 
 
-# FIG 7
-def figure_7(filename, simtime_current=10 * 60 * second):
+# FIG 11
+def figure_11(filename, simtime_current=10 * 60 * second):
     """Analyze spontaneous and evoked SWR simulations to study SWR dynamics (properties and correlation).
-    Produces Fig. 7 of the manuscript
+    Produces Fig. 11 of the manuscript
 
     :param filename: str
         Name of spiking filename
@@ -497,10 +503,15 @@ def figure_7(filename, simtime_current=10 * 60 * second):
                            pad=0.5, sep=4., color="Black", borderpad=-1, my_size=my_size)
     ax.add_artist(ob)
 
+    textstr = r'\textbf{A1}'
+    props = dict(facecolor='none', edgecolor='none')
+    ax.text(-0.09, 1.25, textstr, transform=ax.transAxes, fontsize=my_size + 4,
+            verticalalignment='top', bbox=props, size = my_size)
+
     # ================ SWR properties
     for sub_n, my_data, my_label in zip([gs1[1, 0:2], gs1[1, 2:4], gs1[1, 4:6]],
                                         [IEI_end_start_FWHM, amp_peaks, durations_spont],
-                                        ['IEI [sec]', 'Amplitude [pA]', 'FWHM [ms]']):
+                                        ['IEI [s]', 'Amplitude [pA]', 'FWHM [ms]']):
         ax = subplot(sub_n)
         plt.hist(my_data, bins=30, color='k', density=True)
         adjust_yaxis(ax, my_size)
@@ -524,12 +535,17 @@ def figure_7(filename, simtime_current=10 * 60 * second):
             ylim([0, 2.5])
             ax.set_yticks([0, 2])
 
+            textstr = r'\textbf{B1}'
+            props = dict(facecolor='none', edgecolor='none')
+            ax.text(-0.38, 1.25, textstr, transform=ax.transAxes, fontsize=my_size + 4,
+                    verticalalignment='top', bbox=props, size=my_size)
+
     # ================ Correlation spontaneous SWR events - IEI
     ax = subplot(gs1[2, 0:3])
     plt.scatter(IEI_end_start_FWHM, amp_peaks[1:], facecolor='k',
                 s=2)
     plt.axvline(x=0.188, linewidth=1, color='k', linestyle='--')
-    xlabel('Previous IEI [sec]', fontsize=my_size)
+    xlabel('Previous IEI [s]', fontsize=my_size)
     ylabel('\n'.join(wrap('Amplitude [pA]', 15)), fontsize=my_size)
     c, p = pearsonr(IEI_end_start_FWHM, amp_peaks[1:])
     adjust_axes_spont(ax, c, p, my_size)
@@ -543,11 +559,15 @@ def figure_7(filename, simtime_current=10 * 60 * second):
     plt.plot(aux_xaxis, fit_func(aux_xaxis, *popt), 'r', lw=1.5,
              label='fit: a=%5.3f, b=%5.3f, c=%5.3f' % tuple(popt))
     print('Fitted time constant spont:', 1. / popt[1] * 1e3, ' ms')
+    textstr = r'\textbf{C1}'
+    props = dict(facecolor='none', edgecolor='none')
+    ax.text(-0.2, 1.25, textstr, transform=ax.transAxes, fontsize=my_size + 4,
+            verticalalignment='top', bbox=props, size=my_size)
 
     ax = subplot(gs1[2, 3:6])
     plt.scatter(IEI_end_start_FWHM, amp_peaks[:-1], facecolor='k',
              edgecolor='k', s = 2)
-    xlabel('Next IEI [sec]', fontsize=my_size)
+    xlabel('Next IEI [s]', fontsize=my_size)
     c, p = pearsonr(IEI_end_start_FWHM, amp_peaks[:-1])
     adjust_axes_spont(ax, c, p, my_size)
     ylim([40, 80])
@@ -596,11 +616,16 @@ def figure_7(filename, simtime_current=10 * 60 * second):
     ax.add_artist(ob)
     title('Evoked', fontsize=my_size)
 
+    textstr = r'\textbf{A2}'
+    props = dict(facecolor='none', edgecolor='none')
+    ax.text(-0.09, 1.25, textstr, transform=ax.transAxes, fontsize=my_size + 4,
+            verticalalignment='top', bbox=props, size = my_size)
+
     # ================ Properties of evoked SWRs
     for sub_n, my_data, my_label in zip([gs1[1, 6:8], gs1[1, 8:10], gs1[1, 10:]],
                                         [np.hstack((IEI_end_start_FWHM_NEXT_evoked, IEI_end_start_FWHM_PREV_evoked)), amp_evoked,
                                          durations_evoked],
-                                        ['IEI [sec]', 'Amplitude [pA]', 'FWHM [ms]']):
+                                        ['IEI [s]', 'Amplitude [pA]', 'FWHM [ms]']):
 
         ax = subplot(sub_n)
         plt.hist(my_data, bins=30, color='k', density=True)
@@ -624,12 +649,17 @@ def figure_7(filename, simtime_current=10 * 60 * second):
             ylim([0, 2.5])
             ax.set_yticks([0, 2])
 
+            textstr = r'\textbf{B2}'
+            props = dict(facecolor='none', edgecolor='none')
+            ax.text(-0.38, 1.25, textstr, transform=ax.transAxes, fontsize=my_size + 4,
+                    verticalalignment='top', bbox=props, size=my_size)
+
     # ================= Correlation of evoked SWR amplitude - IEI
     ax = subplot(gs1[2, 6:9])
     scatter(IEI_end_start_FWHM_NEXT_evoked, amp_evoked, facecolor='k',
             s=2)
     plt.axvline(x=0.082, linewidth=1, color='k', linestyle='--')
-    xlabel('Previous IEI [sec]', fontsize=my_size)
+    xlabel('Previous IEI [s]', fontsize=my_size)
     ylabel('\n'.join(wrap('Amplitude [pA]', 40)), fontsize=my_size)
     c, p = pearsonr(IEI_end_start_FWHM_NEXT_evoked, amp_evoked)
     adjust_axes_spont(ax, c, p, my_size)
@@ -643,11 +673,15 @@ def figure_7(filename, simtime_current=10 * 60 * second):
     plt.plot(aux_xaxis, fit_func(aux_xaxis, *popt), 'r', lw=1.5,
              label='fit: a=%5.3f, b=%5.3f, c=%5.3f' % tuple(popt))
     print('Fitted time constant evoked:', 1. / popt[1] * 1e3, ' ms')
+    textstr = r'\textbf{C2}'
+    props = dict(facecolor='none', edgecolor='none')
+    ax.text(-0.2, 1.25, textstr, transform=ax.transAxes, fontsize=my_size + 4,
+            verticalalignment='top', bbox=props, size=my_size)
 
     ax = subplot(gs1[2, 9:])
     scatter(IEI_end_start_FWHM_PREV_evoked, amp_evoked, facecolor='k',
             edgecolor='k', s=2)
-    xlabel('\n'.join(wrap('Next IEI [sec]', 16)), fontsize=my_size)
+    xlabel('\n'.join(wrap('Next IEI [s]', 16)), fontsize=my_size)
     c, p = pearsonr(amp_evoked, IEI_end_start_FWHM_PREV_evoked)
     adjust_axes_spont(ax, c, p, my_size)
     ylim([40, 85])
@@ -655,10 +689,10 @@ def figure_7(filename, simtime_current=10 * 60 * second):
     yticks([40, 70])
     xticks([0, 1, 2])
 
-    savefig(filename_full[:-4] + '_figure7.png', dpi=300, format='png', bbox_inches='tight')
+    savefig(filename_full[:-4] + '_figure11.png', dpi=300, format='png', bbox_inches='tight')
 
 
-# FIG 8 and 9
+# FIG 13 and 14
 def compare_default_to_other_plasticities(filename, simtime_current=10*60*second, t_F=250, eta_F=0.15, max_z=1.,
                                           depr_compare=True):
     """Compare the default case (with B -> A syn. depression) with the case in which either the B->P depression or the
@@ -779,15 +813,15 @@ def compare_default_to_other_plasticities(filename, simtime_current=10*60*second
         fig = plt.figure(figsize=[17.6 / 2.54, 1.44 * 17.6 / 2.54])
         gs1 = gridspec.GridSpec(7, 6, height_ratios=[1, 1, 1, 1, 1, 0., 0.8])
         gs2 = gridspec.GridSpecFromSubplotSpec(2, 6, subplot_spec=gs1[1:3, :], hspace=0.0, wspace=0.8)
-        gs3 = gridspec.GridSpecFromSubplotSpec(2, 6, subplot_spec=gs1[3:5, :], hspace=0.5, wspace=0.8)
+        gs3 = gridspec.GridSpecFromSubplotSpec(2, 6, subplot_spec=gs1[3:5, :], hspace=0.4, wspace=0.8)
         gs4 = gridspec.GridSpecFromSubplotSpec(1, 6, subplot_spec=gs1[6, :], hspace=0.0, wspace=1.)
     else:
         fig = plt.figure(figsize=[17.6 / 2.54, 1.2 * 17.6 / 2.54])
         gs1 = gridspec.GridSpec(5, 6, height_ratios=[1, 1, 1, 1, 1])
         gs2 = gridspec.GridSpecFromSubplotSpec(2, 6, subplot_spec=gs1[1:3, :], hspace=0.0, wspace=0.8)
-        gs3 = gridspec.GridSpecFromSubplotSpec(2, 6, subplot_spec=gs1[3:, :], hspace=0.3, wspace=0.8)
+        gs3 = gridspec.GridSpecFromSubplotSpec(2, 6, subplot_spec=gs1[3:, :], hspace=0.4, wspace=0.8)
 
-    gs1.update(hspace=.3, wspace=.8)
+    gs1.update(hspace=.4, wspace=.8)
     ax = subplot(gs1[0, 0:6])
     range_around_peak = int(30000 / compress_step_indices)
     peak_distance = t_short[idx_peaks_short[which_peak]] - t_short_change[idx_peaks_short_change[which_peak]]
@@ -853,8 +887,8 @@ def compare_default_to_other_plasticities(filename, simtime_current=10*60*second
         adjust_xaxis(ax, [0, 400], my_size)
         if subn == 0:
             ylabel('\n'.join(wrap('Pop. firing rate [spikes/s]', 20)), fontsize=my_size)
-        ob = AnchoredHScaleBar(size=50, label="50 ms", loc=2, frameon=False, extent=0,
-                               pad=0.5, sep=4., color="Black",
+        ob = AnchoredHScaleBar(size=50, label="50 ms", loc=1, frameon=False, extent=0,
+                               pad=1., sep=4., color="Black",
                                borderpad=0.5, my_size=my_size)
         ax.add_artist(ob)
 
@@ -902,7 +936,7 @@ def compare_default_to_other_plasticities(filename, simtime_current=10*60*second
                                                                 [IEI_end_start_FWHM, amp_peaks, durations_spont],
                                                                 [IEI_end_start_FWHM_change, amp_peaks_change,
                                                                  durations_spont_change],
-                                                                ['IEI [sec]', 'Amplitude ' + unit_amp, 'FWHM [ms]']):
+                                                                ['IEI [s]', 'Amplitude ' + unit_amp, 'FWHM [ms]']):
         ax = subplot(sub_n)
         plt.hist([my_data_default, my_data_change], color=['k', color_change], bins=30, lw=0, density=True)
         adjust_yaxis(ax, my_size)
@@ -930,7 +964,7 @@ def compare_default_to_other_plasticities(filename, simtime_current=10*60*second
                 ax.set_yticks([0, 0.8, 1.6])
             ylabel('Prob. density [a. u.]', fontsize=my_size)
 
-        if my_label == 'IEI [sec]':
+        if my_label == 'IEI [s]':
             textstr = r'\textbf{C}'
             props = dict(facecolor='none', edgecolor='none')
             ax.text(-0.55, 1.1, textstr, transform=ax.transAxes, fontsize=my_size + 4,
@@ -942,11 +976,8 @@ def compare_default_to_other_plasticities(filename, simtime_current=10*60*second
                 edgecolor='k', s=2, rasterized=True)
     plt.scatter(IEI_end_start_FWHM_change, amp_peaks_change[1:], facecolor=color_change,
                 edgecolor=color_change, s=2, rasterized=True)
-    if depr_compare:
-        title('Previous IEI [sec]', fontsize=my_size)
-    else:
-        xlabel('Previous IEI [sec]', fontsize=my_size)
 
+    xlabel('Previous IEI [s]', fontsize=my_size)
     ylabel('\n'.join(wrap('Amplitude ' + unit_amp, 40)), fontsize=my_size)
     c, p = pearsonr(IEI_end_start_FWHM, amp_peaks[1:])  # of default
     adjust_axes_spont(ax, c, p, my_size)
@@ -989,10 +1020,7 @@ def compare_default_to_other_plasticities(filename, simtime_current=10*60*second
     plt.scatter(IEI_end_start_FWHM_change, amp_peaks_change[:-1], facecolor=color_change,
                 edgecolor=color_change, s=2, rasterized=True)  # amplitude of previous event - both works
     ylabel('Amplitude ' + unit_amp, fontsize=my_size)
-    if depr_compare:
-        title('Next IEI [sec]', fontsize=my_size)
-    else:
-        xlabel('Next IEI [sec]', fontsize=my_size)
+    xlabel('Next IEI [s]', fontsize=my_size)
     c, p = pearsonr(IEI_end_start_FWHM, amp_peaks[:-1])
     adjust_axes_spont(ax, c, p, my_size)
     if depr_compare:
@@ -1051,15 +1079,17 @@ def compare_default_to_other_plasticities(filename, simtime_current=10*60*second
                 verticalalignment='top', bbox=props, size = my_size + 4)
 
         # Plot e-P bifurcation diagram:
-        bif.plot_bifurcation(ax,aux,bs_def,'P',[0,1],pmax,'e',e_ticks,e_ticklabels,P_ticks,P_ticks,my_size,plot_color='black',line_width=1.5,inward_ticks=False)
-        bif.plot_bifurcation(ax,aux,bs,'P',[0,1],pmax,'e',e_ticks,e_ticklabels,P_ticks,P_ticks,my_size,plot_color='DeepPink',line_width=1.5,inward_ticks=False)
-        ax.plot(e_def[(t_def >= tstart) & (t_def <= tstop)], p_def[(t_def >= tstart) & (t_def <= tstop)], c='DarkGray', lw=1.)
-        ax.plot(e_ext[(t_ext >= tstart) & (t_ext <= tstop)], p_ext[(t_ext >= tstart) & (t_ext <= tstop)], c='Pink', lw=1.)
+        ax.plot(e_def[(t_def >= tstart) & (t_def <= tstop)], p_def[(t_def >= tstart) & (t_def <= tstop)], c='Black', lw=1.)
+        ax.plot(e_ext[(t_ext >= tstart) & (t_ext <= tstop)], p_ext[(t_ext >= tstart) & (t_ext <= tstop)], c='DeepPink', lw=1.)
+        bif.plot_bifurcation(ax,aux,bs_def,'P',[0,1],pmax,'e',e_ticks,e_ticklabels,P_ticks,P_ticks,my_size,plot_color='DarkGray',line_width=1.5,inward_ticks=False)
+        bif.plot_bifurcation(ax,aux,bs,'P',[0,1],pmax,'e',e_ticks,e_ticklabels,P_ticks,P_ticks,my_size,plot_color='Pink',line_width=1.5,inward_ticks=False)
 
         ax = subplot(gs4[0, 2:4])
         # Plot e-B bifurcation diagram:
-        bif.plot_bifurcation(ax,aux,bs_def,'B',[0,1],bmax,'e',e_ticks,e_ticklabels,B_ticks,B_ticks,my_size,plot_color='black',line_width=1.5,inward_ticks=False)
-        bif.plot_bifurcation(ax,aux,bs,'B',[0,1],bmax,'e',e_ticks,e_ticklabels,B_ticks,B_ticks,my_size,plot_color='DeepPink',line_width=1.5,inward_ticks=False)
+        ax.plot(e_def[(t_def >= tstart) & (t_def <= tstop)], b_def[(t_def >= tstart) & (t_def <= tstop)], c='Black', lw=1.)
+        ax.plot(e_ext[(t_ext >= tstart) & (t_ext <= tstop)], b_ext[(t_ext >= tstart) & (t_ext <= tstop)], c='DeepPink', lw=1.)
+        bif.plot_bifurcation(ax,aux,bs_def,'B',[0,1],bmax,'e',e_ticks,e_ticklabels,B_ticks,B_ticks,my_size,plot_color='DarkGray',line_width=1.5,inward_ticks=False)
+        bif.plot_bifurcation(ax,aux,bs,'B',[0,1],bmax,'e',e_ticks,e_ticklabels,B_ticks,B_ticks,my_size,plot_color='Pink',line_width=1.5,inward_ticks=False)
 
         # Create grid spanning e and B space:
         E, B = np.meshgrid(np.arange(0, 1, .01), np.arange(-1, 250, .5))
@@ -1068,34 +1098,31 @@ def compare_default_to_other_plasticities(filename, simtime_current=10*60*second
         # Plot e nullcline:
         nc.plot_nullcline(ax,E,B,dE,'e nullcline','upper right',(1.05,1.05),my_size)
 
-        ax.plot(e_def[(t_def >= tstart) & (t_def <= tstop)], b_def[(t_def >= tstart) & (t_def <= tstop)], c='DarkGray', lw=1.)
-        ax.plot(e_ext[(t_ext >= tstart) & (t_ext <= tstop)], b_ext[(t_ext >= tstart) & (t_ext <= tstop)], c='Pink', lw=1.)
-
         ax = subplot(gs4[0, 4:6])
 
         # Plot e-A bifurcation diagram:
-        bif.plot_bifurcation(ax,aux,bs_def,'A',[0,1],amax,'e',e_ticks,e_ticklabels,A_ticks,A_ticks,my_size,plot_color='black',line_width=1.5,inward_ticks=False)
-        bif.plot_bifurcation(ax,aux,bs,'A',[0,1],amax,'e',e_ticks,e_ticklabels,A_ticks,A_ticks,my_size,plot_color='DeepPink',line_width=1.5,inward_ticks=False)
-        ax.plot(e_def[(t_def >= tstart) & (t_def <= tstop)], a_def[(t_def >= tstart) & (t_def <= tstop)], c='DarkGray', lw=1.)
-        ax.plot(e_ext[(t_ext >= tstart) & (t_ext <= tstop)], a_ext[(t_ext >= tstart) & (t_ext <= tstop)], c='Pink', lw=1.)
+        ax.plot(e_def[(t_def >= tstart) & (t_def <= tstop)], a_def[(t_def >= tstart) & (t_def <= tstop)], c='Black', lw=1.)
+        ax.plot(e_ext[(t_ext >= tstart) & (t_ext <= tstop)], a_ext[(t_ext >= tstart) & (t_ext <= tstop)], c='DeepPink', lw=1.)
+        bif.plot_bifurcation(ax,aux,bs_def,'A',[0,1],amax,'e',e_ticks,e_ticklabels,A_ticks,A_ticks,my_size,plot_color='DarkGray',line_width=1.5,inward_ticks=False)
+        bif.plot_bifurcation(ax,aux,bs,'A',[0,1],amax,'e',e_ticks,e_ticklabels,A_ticks,A_ticks,my_size,plot_color='Pink',line_width=1.5,inward_ticks=False)
 
         # Separating line:
-        fig.text(0.5, 0.209, 'Rate model', va='center', ha='center', fontsize=my_size, bbox=dict(facecolor='white', edgecolor='white'))
-        line = plt.Line2D([0.06,0.9],[0.21,0.21], linewidth=1, linestyle='--', transform=fig.transFigure, color='DarkGray')
+        fig.text(0.5, 0.204, 'Rate model', va='center', ha='center', fontsize=my_size, bbox=dict(facecolor='white', edgecolor='white'))
+        line = plt.Line2D([0.06,0.9],[0.205,0.205], linewidth=1, linestyle='--', transform=fig.transFigure, color='DarkGray')
         fig.add_artist(line)
 
     if depr_compare:
         savefig(
-            os.path.join(path_folder, + filename + '_compare_with_BtoPdepression' + '_T_' + str(simtime_current / second) + '.png'),
-            dpi=600, format='png', bbox_inches='tight')
+            os.path.join(path_folder, filename + '_compare_with_BtoPdepression' + '_T_' + str(simtime_current / second) + '.pdf'),
+            dpi=800, bbox_inches='tight')
 
     else:
         savefig(
-            os.path.join(path_folder, filename + '_compare_with_PtoAfacilitation' + '_T_' + str(simtime_current / second) + '.png'),
-            dpi=600, format='png', bbox_inches='tight')
+            os.path.join(path_folder, filename + '_compare_with_PtoAfacilitation' + '_T_' + str(simtime_current / second) + '.pdf'),
+            dpi=800,  bbox_inches='tight')
 
 
-# FIG 10
+# FIG 15
 def plot_facilitationPtoA_effects(filename, simtime_current=10 * 60 * second, t_F=230., eta_F=0.32, max_z=1.,
                                   gab_fac_only=4.5, gba_fac_only=5.5):
     """Compare the default case (with B->A synaptic depression) with the case in which P->A facilitation is the only
@@ -1144,14 +1171,14 @@ def plot_facilitationPtoA_effects(filename, simtime_current=10 * 60 * second, t_
     # fig = plt.figure(figsize=[17.6 / 2.54, 0.9 * 17.6 / 2.54])
     fig = plt.figure(figsize=[17.6 / 2.54, 1.125 * 17.6 / 2.54])
     gs1 = gridspec.GridSpec(6, 6, height_ratios=[1, 1, 1, 1, 0., 0.8])
-    gs2 = gridspec.GridSpecFromSubplotSpec(2, 6, subplot_spec=gs1[2:4, :], hspace=0.5, wspace=0.8)
-    gs3 = gridspec.GridSpecFromSubplotSpec(1, 6, subplot_spec=gs1[5, :], hspace=0., wspace=1.0)
+    gs2 = gridspec.GridSpecFromSubplotSpec(2, 6, subplot_spec=gs1[2:4, :], hspace=0.4, wspace=0.8)
+    gs3 = gridspec.GridSpecFromSubplotSpec(1, 6, subplot_spec=gs1[5, :], hspace=0.0, wspace=1.0)
 
     my_size = 9
     plt.rc('text.latex', preamble=r'\usepackage{cmbright}')
     plt.rc('text', usetex=True)
 
-    gs1.update(hspace=.3, wspace=1.5)
+    gs1.update(hspace=.45, wspace=1.5)
 
     ax = subplot(gs1[0, 0:6])
     t_plot_start = np.argmin(np.abs(t_spont - 236))
@@ -1204,7 +1231,7 @@ def plot_facilitationPtoA_effects(filename, simtime_current=10 * 60 * second, t_
             [gs2[0, 0:2], gs2[0, 2:4], gs2[0, 4:6]],
             [IEI_end_start_FWHM, amp_peaks, durations_spont],
             [IEI_end_start_FWHM_fac, amp_peaks_fac, durations_spont_fac],
-            ['IEI [sec]', 'Amplitude ' + unit_amp, 'FWHM [ms]']):
+            ['IEI [s]', 'Amplitude ' + unit_amp, 'FWHM [ms]']):
         ax = subplot(sub_n)
         plt.hist([my_data_default, my_data_fac], bins=30, color=['k', 'DarkMagenta'], normed=True, lw=0)  # normalized (AUC=1)
         adjust_yaxis(ax, my_size)
@@ -1226,7 +1253,7 @@ def plot_facilitationPtoA_effects(filename, simtime_current=10 * 60 * second, t_
             ax.set_xticks([0, 1])
             yticks([0, 0.8, 1.6])
 
-        if my_label == 'IEI [sec]':
+        if my_label == 'IEI [s]':
             textstr = r'\textbf{B}'
             props = dict(facecolor='none', edgecolor='none')
             ax.text(-0.55, 1.1, textstr, transform=ax.transAxes, fontsize=my_size + 4,
@@ -1241,7 +1268,7 @@ def plot_facilitationPtoA_effects(filename, simtime_current=10 * 60 * second, t_
     plt.axvline(x=0.17, linewidth=1., color='k', linestyle='-.')
     plt.axvline(x=0.019, linewidth=1., color='DarkMagenta', linestyle='--')
 
-    title('Previous IEI [sec]', fontsize=my_size)
+    xlabel('Previous IEI [s]', fontsize=my_size)
     ylabel('\n'.join(wrap('Amplitude ' + unit_amp, 40)), fontsize=my_size)
     c, p = pearsonr(IEI_end_start_FWHM, amp_peaks[1:])
     adjust_axes_spont(ax, c, p, my_size)
@@ -1272,8 +1299,8 @@ def plot_facilitationPtoA_effects(filename, simtime_current=10 * 60 * second, t_
                 edgecolor='k', s=2, rasterized=True)
     plt.scatter(IEI_end_start_FWHM_fac, amp_peaks_fac[:-1], facecolor='DarkMagenta',
                 edgecolor='DarkMagenta', s=2, rasterized=True)
-    ylabel('Amplitude ' + unit_amp, fontsize=my_size)
-    title('Next IEI [sec]', fontsize=my_size)
+    # ylabel('Amplitude ' + unit_amp, fontsize=my_size)
+    xlabel('Next IEI [s]', fontsize=my_size)
     c, p = pearsonr(IEI_end_start_FWHM, amp_peaks[:-1])
     adjust_axes_spont(ax, c, p, my_size)
     xlim([-0.1, 2.7])
@@ -1316,7 +1343,8 @@ def plot_facilitationPtoA_effects(filename, simtime_current=10 * 60 * second, t_
             verticalalignment='top', bbox=props, size = my_size + 4)
 
     # Plot z-P bifurcation diagram:
-    bif.plot_bifurcation(ax,aux,bs,'P',[0,1],pmax,'z',z_ticks,z_ticklabels,P_ticks,P_ticks,my_size,plot_color='DarkMagenta',line_width=1.5,inward_ticks=False)
+    ax.plot(z_facil[(t_facil >= tstart) & (t_facil <= tstop)], p_facil[(t_facil >= tstart) & (t_facil <= tstop)], c='DarkMagenta', lw=1.)
+    bif.plot_bifurcation(ax,aux,bs,'P',[0,1],pmax,'z',z_ticks,z_ticklabels,P_ticks,P_ticks,my_size,plot_color='Orchid',line_width=1.5,inward_ticks=False)
 
     # Create grid spanning z and P space:
     Z, P = np.meshgrid(np.arange(0, 1, .01), np.arange(-1, 120, .5))
@@ -1325,32 +1353,30 @@ def plot_facilitationPtoA_effects(filename, simtime_current=10 * 60 * second, t_
     # Plot z nullcline:
     nc.plot_nullcline(ax,Z,P,dZ,'z nullcline','lower right',(1.05,0.0),my_size)
 
-    ax.plot(z_facil[(t_facil >= tstart) & (t_facil <= tstop)], p_facil[(t_facil >= tstart) & (t_facil <= tstop)], c='Orchid', lw=1.)
-
     ax = subplot(gs3[0, 2:4])
     # Plot z-B bifurcation diagram:
-    bif.plot_bifurcation(ax,aux,bs,'B',[0,1],bmax,'z',z_ticks,z_ticklabels,B_ticks,B_ticks,my_size,plot_color='DarkMagenta',line_width=1.5,inward_ticks=False)
-    ax.plot(z_facil[(t_facil >= tstart) & (t_facil <= tstop)], b_facil[(t_facil >= tstart) & (t_facil <= tstop)], c='Orchid', lw=1.)
+    ax.plot(z_facil[(t_facil >= tstart) & (t_facil <= tstop)], b_facil[(t_facil >= tstart) & (t_facil <= tstop)], c='DarkMagenta', lw=1.)
+    bif.plot_bifurcation(ax,aux,bs,'B',[0,1],bmax,'z',z_ticks,z_ticklabels,B_ticks,B_ticks,my_size,plot_color='Orchid',line_width=1.5,inward_ticks=False)
 
     ax = subplot(gs3[0, 4:6])
     # Plot z-A bifurcation diagram:
-    bif.plot_bifurcation(ax,aux,bs,'A',[0,1],amax,'z',z_ticks,z_ticklabels,A_ticks,A_ticks,my_size,plot_color='DarkMagenta',line_width=1.5,inward_ticks=False)
-    ax.plot(z_facil[(t_facil >= tstart) & (t_facil <= tstop)], a_facil[(t_facil >= tstart) & (t_facil <= tstop)], c='Orchid', lw=1.)
+    ax.plot(z_facil[(t_facil >= tstart) & (t_facil <= tstop)], a_facil[(t_facil >= tstart) & (t_facil <= tstop)], c='DarkMagenta', lw=1.)
+    bif.plot_bifurcation(ax,aux,bs,'A',[0,1],amax,'z',z_ticks,z_ticklabels,A_ticks,A_ticks,my_size,plot_color='Orchid',line_width=1.5,inward_ticks=False)
 
     # Separating line:
-    fig.text(0.5, 0.229, 'Rate model', va='center', ha='center', fontsize=my_size, bbox=dict(facecolor='white', edgecolor='white'))
-    line = plt.Line2D([0.06,0.9],[0.23,0.23], linewidth=1, linestyle='--', transform=fig.transFigure, color='DarkGray')
+    fig.text(0.5, 0.221, 'Rate model', va='center', ha='center', fontsize=my_size, bbox=dict(facecolor='white', edgecolor='white'))
+    line = plt.Line2D([0.06,0.9],[0.222,0.222], linewidth=1, linestyle='--', transform=fig.transFigure, color='DarkGray')
     fig.add_artist(line)
 
-    savefig(os.path.join(path_folder, filename + '_compare_with_PtoAfac_only.png'),
-            dpi=200, format='png', bbox_inches='tight')
+    savefig(os.path.join(path_folder, filename + '_compare_with_PtoAfac_only.pdf'),
+            dpi=800, bbox_inches='tight')
 
 
-# FIG 6-1
-def adds_on_fig_6(filename, fraction_stim=.6):
-    """Additional plots to explain LFP definition, producing Suppl. Figure 6-1 """
+# FIG 3
+def adds_on_fig_9(filename, fraction_stim=.6):
+    """Additional plots to explain LFP definition, producing Figure 3 """
 
-    filename_saved = os.path.join(path_folder, + filename + '_sim_all_current_fig6_fraction_' + str(fraction_stim) + '.npz')
+    filename_saved = os.path.join(path_folder, filename + '_sim_fig9_fraction_' + str(fraction_stim) + '.npz')
 
     data = np.load(filename_saved, encoding='latin1', allow_pickle=True)  # all elements are unitless (/Hz
     info_dic = dict(zip(("{}".format(k) for k in data), (data[k] for k in data)))
@@ -1373,9 +1399,12 @@ def adds_on_fig_6(filename, fraction_stim=.6):
     mean_A_input_p = info_dic['mean_A_input_p']
     compress_step_indices = int(info_dic['compress_step_indices'])
 
-    fig = plt.figure(figsize=[12, 9])
-    my_size = 11
-    x_lim_start = warm_up_time - 700  # ms
+    fig = plt.figure(figsize=[15.6 / 2.54, 9./12. * 15.6 / 2.54])
+    my_size = 9
+    plt.rc('text.latex', preamble=r'\usepackage{cmbright}')
+    plt.rc('text', usetex=True)
+
+    x_lim_start = warm_up_time - 800  # ms
     x_lim_end = warm_up_time + 250  # ms
     xlim1 = [x_lim_start, x_lim_end]
 
@@ -1386,19 +1415,24 @@ def adds_on_fig_6(filename, fraction_stim=.6):
     # ============================================== #
     ax = subplot(511)
     ip, tp = spikes_dic['P_' + str(idx_c)]
-    plt.scatter(tp / ms, ip, marker='.', color='#ef3b53', s=0.85, rasterized=True)
+    plt.scatter(tp / ms, ip, marker='.', color='#ef3b53', s=0.15, rasterized=True)
     # ylim([0, 50])
     xlim(xlim1)
     plt.axis('off')
     add_sign_of_stimulation(ax, warm_up_time, time_with_curr)
+    textstr = r'\textbf{A}'
+    props = dict(facecolor='none', edgecolor='none')
+    ax.text(-0.22, 1.1, textstr, transform=ax.transAxes, fontsize=my_size + 4,
+            verticalalignment='top', bbox=props, size = my_size)
+
 
     ax = subplot(512)
-    plt.plot(t_array[idx_c, :], p_array[idx_c, :], '#ef3b53', lw=2., label='P')
+    plt.plot(t_array[idx_c, :], p_array[idx_c, :], '#ef3b53', lw=1., label='P')
     ylim(-5, np.max(p_array) + 2)
     yticks([0, 40, 80])
     adjust_yaxis(ax, my_size)
     adjust_xaxis(ax, None, my_size, show_bottom=False)
-    ylabel('\n'.join(wrap('P pop. rate [spikes/s]', 12)), fontsize=my_size)
+    ylabel('\n'.join(wrap('$P$ pop. rate [spikes/s]', 15)), fontsize=my_size)
 
     xlim(xlim1)
     ob = AnchoredHScaleBar(size=50, label="50 ms", loc=3, frameon=False, extent=0,
@@ -1407,6 +1441,10 @@ def adds_on_fig_6(filename, fraction_stim=.6):
                            my_size=my_size)   # pad and borderpad can be used to modify the position of the bar a bit
     ax.add_artist(ob)
     add_sign_of_stimulation(ax, warm_up_time, time_with_curr)
+    textstr = r'\textbf{B}'
+    props = dict(facecolor='none', edgecolor='none')
+    ax.text(-0.22, 1.1, textstr, transform=ax.transAxes, fontsize=my_size + 4,
+            verticalalignment='top', bbox=props, size = my_size)
 
     ax = subplot(513)
     # select part of array that is plotted
@@ -1415,22 +1453,26 @@ def adds_on_fig_6(filename, fraction_stim=.6):
 
     plot(t_array[idx_c, idx_xlim_start:idx_xlim_end],
          mean_P_input_p[idx_c, idx_xlim_start:idx_xlim_end],
-         '#ef3b53', lw=1.5, label='P input to P cells')
+         '#ef3b53', lw=1, label='$P$ input to $P$ cells')
 
     plot(t_array[idx_c, idx_xlim_start:idx_xlim_end],
          mean_A_input_p[idx_c, idx_xlim_start:idx_xlim_end],
-         '#0a9045', lw=1.5, label='A input to P cells')
+         '#0a9045', lw=1, label='$A$ input to $P$ cells')
 
     plot(t_array[idx_c, idx_xlim_start:idx_xlim_end],
          mean_B_input_p[idx_c, idx_xlim_start:idx_xlim_end],
-         '#3c3fef', lw=1.5, label='B input to P cells')
+         '#3c3fef', lw=1, label='$B$ input to $P$ cells')
     legend(loc='lower center', prop={'size': my_size}, framealpha=1.)
 
     xlim(xlim1)
-    ylabel('\n'.join(wrap('Input current to P [pA]', 14)), fontsize=my_size)
+    ylabel('\n'.join(wrap('Input current to $P$ [pA]', 14)), fontsize=my_size)
     adjust_xaxis(ax, None, my_size, show_bottom=False)
     adjust_yaxis(ax, my_size)
     add_sign_of_stimulation(ax, warm_up_time, time_with_curr)
+    textstr = r'\textbf{C}'
+    props = dict(facecolor='none', edgecolor='none')
+    ax.text(-0.22, 1.1, textstr, transform=ax.transAxes, fontsize=my_size + 4,
+            verticalalignment='top', bbox=props, size = my_size)
 
     ax = subplot(514)
     # use Butterworth low pass
@@ -1439,13 +1481,17 @@ def adds_on_fig_6(filename, fraction_stim=.6):
     highcut = 5.
     b, a = create_butter_bandpass(lowcut, highcut, fs, order=2, btype='low')
     filt_trace = filtfilt(b, a, -mean_B_input_p[idx_c, :])
-    plot(t_array[idx_c, idx_xlim_start:idx_xlim_end], filt_trace[idx_xlim_start:idx_xlim_end], '#3c3fef', lw=2.,
+    plot(t_array[idx_c, idx_xlim_start:idx_xlim_end], filt_trace[idx_xlim_start:idx_xlim_end], '#3c3fef', lw=1.,
          label='low pass of B input to P')
     xlim(xlim1)
-    ylabel('\n'.join(wrap('- Low-pass filtered B input to P [pA]', 16)), fontsize=my_size)
+    ylabel('\n'.join(wrap('Low-pass filtered $B$ input to $P$ [pA]', 16)), fontsize=my_size)
     adjust_xaxis(ax, None, my_size, show_bottom=False)
     adjust_yaxis(ax, my_size)
     add_sign_of_stimulation(ax, warm_up_time, time_with_curr)
+    textstr = r'\textbf{D}'
+    props = dict(facecolor='none', edgecolor='none')
+    ax.text(-0.22, 1.1, textstr, transform=ax.transAxes, fontsize=my_size + 4,
+            verticalalignment='top', bbox=props, size = my_size)
 
     ax = subplot(515)
     # band pass filtered version of inh input (high passed)
@@ -1455,30 +1501,33 @@ def adds_on_fig_6(filename, fraction_stim=.6):
     highcut = 180
     b, a = create_butter_bandpass(lowcut, highcut, fs, order=2)
     y_p = filtfilt(b, a, -mean_B_input_p[idx_c, :])
-    plot(t_array[idx_c, idx_xlim_start:idx_xlim_end], y_p[idx_xlim_start:idx_xlim_end], '#3c3fef', lw=1.5,
+    plot(t_array[idx_c, idx_xlim_start:idx_xlim_end], y_p[idx_xlim_start:idx_xlim_end], '#3c3fef', lw=0.7,
          label='band pass of B input to P')
     xlim(xlim1)
-    ylabel('\n'.join(wrap('- Band-pass filtered B input to P [pA]', 16)), fontsize=my_size)
+    ylabel('\n'.join(wrap('Band-pass filtered $B$ input to $P$ [pA]', 16)), fontsize=my_size)
     adjust_xaxis(ax, None, my_size, show_bottom=False)
     adjust_yaxis(ax, my_size)
     add_sign_of_stimulation(ax, warm_up_time, time_with_curr)
+    textstr = r'\textbf{E}'
+    props = dict(facecolor='none', edgecolor='none')
+    ax.text(-0.22, 1.1, textstr, transform=ax.transAxes, fontsize=my_size + 4,
+            verticalalignment='top', bbox=props, size = my_size)
 
-    savefig(os.path.join(path_folder, filename + '_fig6_addson_SPW_like_mod_' + curr_to_pop + '.png'), dpi=300,
+    savefig(os.path.join(path_folder, filename + '_fig9_addson_SPW_like_mod_' + curr_to_pop + '.png'), dpi=300,
             format='png', bbox_inches='tight')
 
 
 
-# FIG 2-1
+# FIG 4
 def adds_on_fig_2(filename, save_intermediate=True):
     """Show If curves and their approximation"""
     fit_boundary_IF_low = [0., -100]  # for a and b respectively
     fit_boundary_IF_up = [2., 0.]  # for a and b respectively
 
-    fig = plt.figure(figsize=[12, 8])
-    my_size = 14
-    # matplotlib.rc('font', family='serif', serif='cm10')
+    fig = plt.figure(figsize=[17.6 / 2.54, 2./3 * 17.6 / 2.54])
+    my_size = 9
+    plt.rc('text.latex', preamble=r'\usepackage{cmbright}')
     plt.rc('text', usetex=True)
-    rc('font', size=16)
     outer = gridspec.GridSpec(4, 3, height_ratios=[1, 1, 1, 1])
     outer.update(wspace=0.5, hspace=0.5)
     gs3 = gridspec.GridSpecFromSubplotSpec(4, 3, subplot_spec=outer[:, :], hspace=.9, wspace=0.2)
@@ -1506,6 +1555,7 @@ def adds_on_fig_2(filename, save_intermediate=True):
 
     # NOTE; if interp axis too large, need to take care of the bad definition of weighted curve of P,A for large I
     # (possibly make a variable interp_axis)
+    # interp_axis = np.arange(-100, 500, 1.)
     interp_axis = np.arange(0, 300, 1.)
 
     # !!! to plot mean input, take input across neurons when extracurrent is zero
@@ -1545,7 +1595,7 @@ def adds_on_fig_2(filename, save_intermediate=True):
 
     # mean_fP_rest = mean(f_interp, axis=1)
     mean_fP_rest = np.nanmean(f_interp, axis=1)
-    ax1.plot(interp_axis, mean_fP_rest, c='#ef3b53', lw=2, label='mean P rest')
+    ax1.plot(interp_axis, mean_fP_rest, c='#ef3b53', lw=1, label='mean P rest')
     shaded_gradient(ax1, mean(dic_resting['mean_input_p'][idx_no_extracurr_rest, :]),
                     mean(dic_resting['std_input_p'][idx_no_extracurr_rest, :]), base_color='r')
     # ======================================== #
@@ -1559,7 +1609,7 @@ def adds_on_fig_2(filename, save_intermediate=True):
 
     # mean_fP_exc = mean(f_interp, axis=1)
     mean_fP_exc = np.nanmean(f_interp, axis=1)
-    ax4.plot(interp_axis, mean_fP_exc, c='#ef3b53', lw=2, label='mean P exc')
+    ax4.plot(interp_axis, mean_fP_exc, c='#ef3b53', lw=1, label='mean P exc')
     shaded_gradient(ax4, mean(dic_excited['mean_input_p'][idx_no_extracurr_exc, :]),
                     mean(dic_excited['std_input_p'][idx_no_extracurr_exc, :]), base_color='r')
 
@@ -1602,7 +1652,7 @@ def adds_on_fig_2(filename, save_intermediate=True):
 
     # mean_fB_rest = mean(f_interp, axis=1)
     mean_fB_rest = np.nanmean(f_interp, axis=1)
-    ax2.plot(interp_axis, mean_fB_rest, c='#3c3fef', lw=2, label='mean B rest')
+    ax2.plot(interp_axis, mean_fB_rest, c='#3c3fef', lw=1, label='mean B rest')
     shaded_gradient(ax2, mean(mean(dic_resting['mean_input_b'][idx_no_extracurr_rest, :])),
                     mean(dic_resting['std_input_b'][idx_no_extracurr_rest, :]), base_color='b')
 
@@ -1616,7 +1666,7 @@ def adds_on_fig_2(filename, save_intermediate=True):
 
     mean_fB_exc = np.nanmean(f_interp, axis=1)
     # mean_fB_exc = np.mean(f_interp, axis=1)
-    ax5.plot(interp_axis, mean_fB_exc, c='#3c3fef', lw=2, label='mean B exc')
+    ax5.plot(interp_axis, mean_fB_exc, c='#3c3fef', lw=1, label='mean B exc')
     shaded_gradient(ax5, mean(dic_excited['mean_input_b'][idx_no_extracurr_exc, :]),
                     mean(dic_excited['std_input_b'][idx_no_extracurr_exc, :]), base_color='b')
 
@@ -1659,7 +1709,7 @@ def adds_on_fig_2(filename, save_intermediate=True):
 
     # mean_fA_rest = mean(f_interp, axis=1)
     mean_fA_rest = np.nanmean(f_interp, axis=1)
-    ax3.plot(interp_axis, mean_fA_rest, c='#0a9045', lw=2, label='mean A rest')
+    ax3.plot(interp_axis, mean_fA_rest, c='#0a9045', lw=1, label='mean A rest')
     shaded_gradient(ax3, mean(mean(dic_resting['mean_input_a'][idx_no_extracurr_rest, :])),
                     mean(dic_resting['std_input_a'][idx_no_extracurr_rest, :]), base_color='g')
 
@@ -1673,7 +1723,7 @@ def adds_on_fig_2(filename, save_intermediate=True):
 
     # mean_fA_exc = mean(f_interp, axis=1)
     mean_fA_exc = np.nanmean(f_interp, axis=1)
-    ax6.plot(interp_axis, mean_fA_exc, c='#0a9045', lw=2, label='mean A exc')
+    ax6.plot(interp_axis, mean_fA_exc, c='#0a9045', lw=1, label='mean A exc')
     shaded_gradient(ax6, mean(dic_excited['mean_input_a'][idx_no_extracurr_exc, :]),
                     mean(dic_excited['std_input_a'][idx_no_extracurr_exc, :]), base_color='g')
 
@@ -1714,9 +1764,9 @@ def adds_on_fig_2(filename, save_intermediate=True):
         my_ax.set_xlim(xlim_if)
 
     ax1.set_ylabel('Firing rate [spikes/s]', fontsize=my_size)
-    ax1.set_title('f-I curves P population', fontsize=my_size)
-    ax2.set_title('f-I curves B population', fontsize=my_size)
-    ax3.set_title('f-I curves A population', fontsize=my_size)
+    ax1.set_title('f-I curves $P$ population', fontsize=my_size)
+    ax2.set_title('f-I curves $B$ population', fontsize=my_size)
+    ax3.set_title('f-I curves $A$ population', fontsize=my_size)
     ax4.set_xlabel('I [pA]', fontsize=my_size)
     ax4.set_ylabel('Firing rate [spikes/s]', fontsize=my_size)
     ax5.set_xlabel('I [pA]', fontsize=my_size)

@@ -30,5 +30,5 @@ if __name__ == '__main__':
     analyze_Vx_results(filename_spiking)
 
     # ================= simulations rate model
-    # FIG 2-2, 6-2
+    # FIG 5, 10
     simulate_from_spiking(filename_spiking, filename_rate, simulate_SPW_like=True, simulate_bistable=True)

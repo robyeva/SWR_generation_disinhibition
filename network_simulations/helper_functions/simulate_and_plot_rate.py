@@ -1,8 +1,8 @@
 __author__ = 'Roberta Evangelista'
 __email__ = 'roberta.evangelista@posteo.de'
 
-"""File contains functions to 
-- derive the rate network from the spiking model 
+"""File contains functions to
+- derive the rate network from the spiking model
 - simulate and plot the rate model
 """
 
@@ -506,7 +506,7 @@ def analyze_Vx_results(filename_spiking, step_v=0.5):
 
 def simulate_from_spiking(filename_spiking, filename_rate, simulate_bistable=False,
                           simulate_SPW_like=False, use_softplus=True):
-    """Creates rate model using parameters derived from the spiking model and create plots 2-2 and 6-2
+    """Creates rate model using parameters derived from the spiking model and create plots 5 and 10
 
      :param filename_spiking: str
         Filename of spiking model
@@ -638,16 +638,16 @@ def simulate_from_spiking(filename_spiking, filename_rate, simulate_bistable=Fal
     print(net.k_a, net.t_a)
 
     if simulate_bistable:
-        # creates Fig. 2-2
+        # creates Fig. 5
         inside_check_bistability_singlecurr(net, filename_rate, use_softplus=use_softplus)
 
     if simulate_SPW_like:
-        # creates Fig. 6-2
+        # creates Fig. 10
         inside_SPW_stimulation(net, filename_rate, use_softplus=use_softplus)
 
 
 def inside_check_bistability_singlecurr(net, filename_rate, inj_curr='I_a', use_softplus=True):
-    """Generates simulation to check for bistability in the model and creates Fig. 2-2
+    """Generates simulation to check for bistability in the model and creates Fig. 5
 
      :param net: class FullParamFromDict
         Contains parameters of the rate model
@@ -743,7 +743,7 @@ def inside_check_bistability_singlecurr(net, filename_rate, inj_curr='I_a', use_
 
 
 def inside_SPW_stimulation(net_4d, filename_rate, use_softplus=True):
-    """Creates simulation for rate model under current injection, to produce Fig. 6-2.
+    """Creates simulation for rate model under current injection, to produce Fig. 10.
 
      :param net_4d: class FullParamFromDict
         Contains parameters of the rate model

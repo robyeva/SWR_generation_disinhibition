@@ -1,7 +1,7 @@
 __author__ = 'Roberta Evangelista'
 __email__ = 'roberta.evangelista@posteo.de'
 
-"""File contains supporting functions needed to create the rate model from the spiking network and run the network 
+"""File contains supporting functions needed to create the rate model from the spiking network and run the network
 simulations shown in Fig. 2-2, 6-2"""
 
 import numpy as np
@@ -57,7 +57,7 @@ def is_nan(x):
 
 
 def softplus_func_mean_field(x, k, t):
-    """Softplus function using k_I and t_I, used in rate model simulation for figs. 2-2 and 6-2"""
+    """Softplus function using k_I and t_I, used in rate model simulation for figs. 5 and 10"""
     return np.log(1. + np.exp(k*(x + t)))
 
 
@@ -290,5 +290,3 @@ def plot_fancy_results(num_row, num_col, num_subplot, x, y, col, label_str, titl
             verts = [(pulse_start, 0)] + list(zip(ix, iy)) + [(pulse_lim + pulse_start, 0)]
             poly = Polygon(verts, facecolor='#d4b021', edgecolor='#d4b021', alpha=0.5)
             ax.add_patch(poly)
-
-

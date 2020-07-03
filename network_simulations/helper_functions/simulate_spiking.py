@@ -253,7 +253,7 @@ def simulate_extended_syn_depression(filename, sigma_P=800*pA, time_with_curr=0.
 def save_sim_all_current_for_fig(filename, sigma_P=400*pA, sigma_B=200*pA, sigma_A=500*pA, time_with_curr=0.01 * second,
                                  my_width=3 * ms, compress_step=10, fraction_stim=.6):
     """Save simulations with spontaneous events and evoked SWRs by stimulation of P, B, or A cells.
-    Needed to produce Fig. 6
+    Needed to produce Fig. 9
 
     :param filename: str
         Name of spiking filename
@@ -471,7 +471,7 @@ def save_sim_all_current_for_fig(filename, sigma_P=400*pA, sigma_B=200*pA, sigma
                    'mean_B_input_p': mean_inh_input_b / pA,
 
                    }
-    filename_to_save = os.path.join(path_folder, filename + '_sim_fig6_fraction_' + str(fraction_stim) + '.npz')
+    filename_to_save = os.path.join(path_folder, filename + '_sim_fig9_fraction_' + str(fraction_stim) + '.npz')
     np.savez_compressed(filename_to_save, **dic_to_save)
 
 
@@ -479,7 +479,7 @@ def save_sim_all_current_for_fig(filename, sigma_P=400*pA, sigma_B=200*pA, sigma
 def long_spontaneous_simulations(filename, simtime_current=10*60*second, my_width=3*ms, compress_step=10,
                                  plot_FR=False, save_input=True, save_spikes=False, depressing_PB=False,
                                  save_depression=False):
-    """Save long spontaneous simulation, to study SWR dynamics. Needed to produce Fig. 7
+    """Save long spontaneous simulation, to study SWR dynamics. Needed to produce Fig. 11
 
     :param filename: str
         Name of spiking filename
@@ -608,7 +608,7 @@ def long_spontaneous_simulations(filename, simtime_current=10*60*second, my_widt
 
     # Simulation of spontaneous network
     start_spont = warm_up_time
-    run(check_behavior_time)
+    run(check_behavior_time, report='text')
     if not (save_input or save_spikes or save_depression):
         device.build(directory='output', compile=True, run=True, debug=False)
 
@@ -850,7 +850,7 @@ def simulate_PtoA_facilitation_spontaneous(filename, simtime_current=10*60 * sec
                                            my_width=3*ms, gab_fac_only=8., gba_fac_only=7., compress_step=10,
                                            plot_FR=False, save_input=True, save_spikes=False, BtoAdepression=True,
                                            with_norm=True):
-    """Simulate network with P -> A synaptic facilitation. Save simulations to plot Fig. 5 and 6
+    """Simulate network with P -> A synaptic facilitation. Save simulations to plot Fig. 14 and 15
     :param filename: str
         Name of spiking filename
     :param simtime_current: Brian second
@@ -1518,4 +1518,3 @@ def IF_curves_copied_neuron_ALLatonce(filename, excited_state=False, n_extra=50,
 
     np.savez_compressed(filename_full, **data_to_save)
     print('Data saved in file: ', filename_full)
-
