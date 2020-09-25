@@ -354,6 +354,9 @@ def save_sim_all_current_for_fig(filename, sigma_P=400*pA, sigma_B=200*pA, sigma
     monitor_depr = StateMonitor(con_AB, 'x', record=True)
     # monitor inhibitory input (to use as an approximation for LFP)
     B_inp_p = StateMonitor(pop_p, 'input_gabaB', record=True)
+    # needed in Fig on LFP approximation
+    A_inp_p = StateMonitor(pop_p, 'input_gabaA', record=True)
+    P_inp_p = StateMonitor(pop_p, 'input_ampa', record=True)
 
     net_3 = Network(collect())
     net_3.store()

@@ -743,7 +743,7 @@ def step4_merge_subnetworks(filename, tol_convergence_FR=3.*Hz, max_B=2.*Hz, mak
     fr_P = average_firing_rate(sm_p, 2 * second, simtime_full)
     fr_B = average_firing_rate(sm_b, 2 * second, simtime_full)
     fr_A = average_firing_rate(sm_a, 2 * second, simtime_full)
-    print('------> Step 4 completed!')
+
     if print_fr:
         print('P firing rate', fr_P)
         print('B firing rate', fr_B)

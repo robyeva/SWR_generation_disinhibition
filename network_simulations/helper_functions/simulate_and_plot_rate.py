@@ -683,6 +683,12 @@ def inside_check_bistability_singlecurr(net, filename_rate, inj_curr='I_a', use_
     depr_clamp.second_change = 0.8
     depr_clamp.third_change = 0.2
 
+    fig = plt.figure(figsize=[13 / 2.54, 14 / 2.54])
+    my_size = 9
+    gs1 = gridspec.GridSpec(3, 12)
+    plt.rc('text.latex', preamble=r'\usepackage{cmbright}')
+    plt.rc('text', usetex=True)
+
     sim_all_current = odeint(eq_clamp_depression, IC_resting, t, printmessg=False,
                              # hmax=max integration step is 1   ms (to detect pulse)
                              hmax=0.01, rtol=1e-6, atol=1e-8,
@@ -703,22 +709,23 @@ def inside_check_bistability_singlecurr(net, filename_rate, inj_curr='I_a', use_
         + (-curr_value) * (sim.second_pulse_start <= t) * (t < sim.pulse_lim + sim.second_pulse_start) \
         + curr_value * (sim.third_pulse_start <= t) * (t < sim.pulse_lim + sim.third_pulse_start)
 
-    fig = plt.figure(figsize=[9, 9])
-    my_size = 13
     for my_data, subp, mycol, my_label in zip([P, B, A, d, I], [1, 2, 3, 5, 4],
                                               ['#ef3b53', '#3c3fef', '#0a9045', '#e67e22', '#d4b021'],
-                                              ['P', 'B', 'A', None, None]):
+                                              ['$P$', '$B$', '$A$', None, None]):
         ax = plt.subplot(5, 1, subp)
-        plt.plot(t, my_data, lw=3, c=mycol, label=my_label)
+        plt.plot(t, my_data, lw=2, c=mycol, label=my_label)
         adjust_yaxis(ax, my_size)
         adjust_xaxis(ax, [0, sim.t_max], my_size, show_bottom=False)
         # add_sign_of_stimulation(ax,True, sim.pulse_start, sim.pulse_lim)
-        plt.legend(loc='best', prop={'size': my_size}, frameon=False)
+        if subp in [1,2]:
+            plt.legend(loc='center', prop={'size': my_size}, frameon=False)
+        elif subp == 3:
+            plt.legend(loc='lower center', prop={'size': my_size}, frameon=False)
 
         if subp == 5:
             # add scalebar
             ob = AnchoredHScaleBar(size=0.5, label="0.5 s", loc=3, frameon=False, extent=0,
-                                   pad=1., sep=4, color="Black",
+                                   pad=.4, sep=4, color="Black",
                                    borderpad=0.1,
                                    my_size=my_size)  # pad and borderpad can be used to modify the position of the bar a bit
             ax.add_artist(ob)
@@ -785,10 +792,11 @@ def inside_SPW_stimulation(net_4d, filename_rate, use_softplus=True):
                                              args=(net_4d, sim, curr_value, False,
                                                    inj_curr, use_softplus))
 
-    fig = plt.figure(figsize=[11, 7])
-    my_size = 14
-    outer = gridspec.GridSpec(4, 3, height_ratios=[1, 1, 1, 1])
-    gs2 = gridspec.GridSpecFromSubplotSpec(4, 3, subplot_spec=outer[:, :], hspace=.08, wspace=0.08)
+    fig = plt.figure(figsize=[16 / 2.54, 7. / 11 * 16 / 2.54])
+    my_size = 9
+    plt.rc('text.latex', preamble=r'\usepackage{cmbright}')
+    plt.rc('text', usetex=True)
+    gs2 = gridspec.GridSpec(4, 3, height_ratios=[1, 1, 1, 1])
 
     x_lim_start = sim.pulse_start - 100 * 1e-3  # ms
     x_lim_end = sim.pulse_start + 200 * 1e-3  # ms
@@ -801,7 +809,7 @@ def inside_SPW_stimulation(net_4d, filename_rate, use_softplus=True):
         # =================== P cells ================== #
         # ============================================== #
         ax = plt.subplot(gs2[0, idx_c])
-        plt.plot(t_array, sim_all_current[:, 0, idx_c], '#ef3b53', label='P', lw=2.5)
+        plt.plot(t_array, sim_all_current[:, 0, idx_c], '#ef3b53', label='$P$', lw=1.5)
         plt.ylim(-5, np.max(sim_all_current[:, 0, :]) + 2)
         plt.yticks(np.arange(0, np.max(sim_all_current[:, 0, :]), 20))
         plt.setp(ax.get_yticklabels()[1::2], visible=False)
@@ -816,21 +824,21 @@ def inside_SPW_stimulation(net_4d, filename_rate, use_softplus=True):
         my_font = font0.copy()
         # my_font.set_weight('bold')
         if curr_to_pop in ['P', 'B']:
-            textstr = curr_to_pop + ' activation'
+            textstr = '$' + curr_to_pop  + '$' + ' activation'
         else:
-            textstr = 'A inactivation'
+            textstr = '$A$ inactivation'
         props = dict(facecolor='none', edgecolor='none')
         # place a text box in upper left in axes coords
         ax.text(0.3, 1.3, textstr, transform=ax.transAxes, fontsize=my_size, fontproperties=my_font,
                 verticalalignment='top', bbox=props)
         if idx_c == 2:
-            plt.legend(loc='upper right', prop={'size': my_size}, frameon=False)
+            plt.legend(loc='center right', prop={'size': my_size}, frameon=False)
 
         # ============================================== #
         # =================== B cells ================== #
         # ============================================== #
         ax = plt.subplot(gs2[1, idx_c])
-        plt.plot(t_array, sim_all_current[:, 1, idx_c], '#3c3fef', label='B', lw=2.5)
+        plt.plot(t_array, sim_all_current[:, 1, idx_c], '#3c3fef', label='$B$', lw=1.5)
         plt.ylim(-5, np.max(sim_all_current[:, 1, :]) + 2)
         plt.yticks(np.arange(0, np.max(sim_all_current[:, 1, :]), 20))
         plt.setp(ax.get_yticklabels()[1::2], visible=False)
@@ -841,13 +849,13 @@ def inside_SPW_stimulation(net_4d, filename_rate, use_softplus=True):
         else:
             plt.axis('off')
         if idx_c == 2:
-            plt.legend(loc='upper right', prop={'size': my_size}, frameon=False)
+            plt.legend(loc='center right', prop={'size': my_size}, frameon=False)
 
         # ============================================== #
         # =================== A cells ================== #
         # ============================================== #
         ax = plt.subplot(gs2[2, idx_c])
-        plt.plot(t_array, sim_all_current[:, 2, idx_c], '#0a9045', label='A', lw=2.5)
+        plt.plot(t_array, sim_all_current[:, 2, idx_c], '#0a9045', label='$A$', lw=1.5)
         plt.ylim(-5, np.max(sim_all_current[:, 2, :]) + 2)
         plt.yticks(np.arange(0, np.max(sim_all_current[:, 2, :]), 10))
         add_sign_of_stimulation(ax, sim.pulse_start, sim.pulse_lim)
@@ -857,13 +865,13 @@ def inside_SPW_stimulation(net_4d, filename_rate, use_softplus=True):
         else:
             plt.axis('off')
         if idx_c == 2:
-            plt.legend(loc='lower right', prop={'size': my_size}, frameon=False)
+            plt.legend(loc='center right', prop={'size': my_size}, frameon=False)
 
         # ============================================== #
         # ================= depression ================= #
         # ============================================== #
         ax = plt.subplot(gs2[3, idx_c])
-        plt.plot(t_array, sim_all_current[:, 3, idx_c], '#e67e22', label='d', lw=2.5)
+        plt.plot(t_array, sim_all_current[:, 3, idx_c], '#e67e22', label='d', lw=1.5)
         plt.ylim(np.min(sim_all_current[:, 3, :]) - 0.05, 1.05)
         plt.yticks(np.arange(1., np.min(sim_all_current[:, 3, :]), -0.2))
         plt.setp(ax.get_yticklabels()[1::2], visible=False)
@@ -876,7 +884,7 @@ def inside_SPW_stimulation(net_4d, filename_rate, use_softplus=True):
             plt.axis('off')
         # add scalebar
         ob = AnchoredHScaleBar(size=50 * 1e-3, label="50 ms", loc=3, frameon=False, extent=0,
-                               pad=1., sep=4, color="Black",
+                               pad=.5, sep=4, color="Black",
                                borderpad=0.1,
                                my_size=my_size)  # pad and borderpad can be used to modify the position of the bar a bit
         ax.add_artist(ob)
@@ -884,9 +892,9 @@ def inside_SPW_stimulation(net_4d, filename_rate, use_softplus=True):
         # add arrow where stimulation is
         # one of the two x,y has to be inside axis lim, otherwise noting is shown!
         ax.annotate("", xy=(sim.pulse_start, 0.35), xytext=(sim.pulse_start, 0.15), xycoords='data',
-                    arrowprops=dict(arrowstyle="->", lw=2.))
+                    arrowprops=dict(arrowstyle="->", lw=1.))
 
     # add a common y label for population rate
-    fig.text(0.085, 0.6, 'Population rate [1/s]', va='center', ha='center', rotation='vertical', fontsize=my_size)
+    fig.text(0.06, 0.6, 'Population rate [1/s]', va='center', ha='center', rotation='vertical', fontsize=my_size)
     plt.savefig(os.path.join(path_folder, filename_rate + '_stim_from_spiking.png'), dpi=300,
                 format='png', bbox_inches='tight')

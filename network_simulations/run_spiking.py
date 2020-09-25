@@ -25,36 +25,6 @@ filename_spiking = 'swr_slice_network'
 if __name__ == '__main__':
 
     seed(3)  # Brian seed
-    
-    # # =============== 1 - Construct the network ========== #
-    # print('Constructing the spiking network..')
-    # step1_PA(filename_spiking, make_plots=False)
-    #
-    # step2_PB(filename_spiking, make_plots=False)
-    #
-    # step3_add_Wab(filename_spiking, make_plots=False)
-    # step4_merge_subnetworks(filename_spiking, make_plots=False)
-    # step5_current_injection(filename_spiking, curr_to_pop='A')    # -> this is more of a check up, but can be skipped
-    # step6_spontaneous(filename_spiking)
-    #
-    # # ================ 2 - Simulations and figures default spiking network ========== #
-    #
-    # # FIG 2
-    # print('Simulating network for Fig. 2')
-    # simulate_extended_syn_depression(filename_spiking, fraction_stim=1.)
-    # fig_bistability_manuscript(filename_spiking)
-    #
-    # # FIG 2-1 --> creates file _intermediate_fI.npz needed for the rate model definition
-    # print('Simulating network for Fig. 2-1')
-    # IF_curves_copied_neuron_ALLatonce(filename_spiking, excited_state=False)
-    # IF_curves_copied_neuron_ALLatonce(filename_spiking, excited_state=True)
-    # adds_on_fig_2(filename_spiking)
-    #
-    # # FIG 6
-    # # might need to adjust xlim in panel A
-    # print('Simulating network for Fig. 6')
-    # save_sim_all_current_for_fig(filename_spiking)
-    # figure_6(filename_spiking)
 
     # =============== 1 - Construct the network ========== #
     print('Constructing the spiking network..')

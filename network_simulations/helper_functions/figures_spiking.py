@@ -79,8 +79,9 @@ def fig_bistability_manuscript(filename, save_targets=True):
 
         np.savez_compressed(filename_full, **data_to_save)
 
-    fig = plt.figure(figsize=[10, 9])
-    my_size = 16
+    fig = plt.figure(figsize=[11.6 / 2.54, 0.9 * 11.6 / 2.54])
+    my_size = 9
+    plt.rc('text.latex', preamble=r'\usepackage{cmbright}')
     plt.rc('text', usetex=True)
     rc('font', size=16)
     x_lim_start = warm_up_time - 1000  # ms
