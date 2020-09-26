@@ -73,7 +73,7 @@ if __name__ == '__main__':
     # shorter sims are needed for plotting purposes - panel B with spikes
     long_spontaneous_simulations(filename_spiking, simtime_current=30*second, save_spikes=True)
     long_spontaneous_simulations(filename_spiking, simtime_current=30*second, save_spikes=True, depressing_PB=True)
-    # needs noisy rate model short simulations before creating figure
+    # needs noisy rate model short simulations before creating figure --> run_noisy_rate.py
     compare_default_to_other_plasticities(filename_spiking, depr_compare=True)
 
     # FIG 14

@@ -367,6 +367,9 @@ def save_sim_all_current_for_fig(filename, sigma_P=400*pA, sigma_B=200*pA, sigma
     a_array = np.empty((3, int(simtime_current / (compress_step * defaultclock.dt))))
     mean_depr_array = np.empty((3, int(simtime_current / (compress_step * defaultclock.dt))))
     mean_inh_input_b = np.empty((3, int(simtime_current / (compress_step * defaultclock.dt))))
+    mean_inh_input_a = np.empty((3, int(simtime_current / (compress_step * defaultclock.dt))))
+    mean_exc_input_p = np.empty((3, int(simtime_current / (compress_step * defaultclock.dt))))
+
     t_array = np.empty((3, int(simtime_current / (compress_step * defaultclock.dt))))
     spikes_dic = {}
 
@@ -410,13 +413,13 @@ def save_sim_all_current_for_fig(filename, sigma_P=400*pA, sigma_B=200*pA, sigma
             spikes_dic['A_' + str(idx_c)][1, :] = np.around(spikes_dic['A_' + str(idx_c)][1, :], decimals=3)
         mean_depr_array[idx_c, :] = np.mean(np.array(monitor_depr.x), axis=0)[::compress_step]
         mean_inh_input_b[idx_c, :] = np.mean(np.array(B_inp_p.input_gabaB), axis=0)[::compress_step]
+        mean_inh_input_a[idx_c, :] = np.mean(np.array(A_inp_p.input_gabaA), axis=0)[::compress_step]
+        mean_exc_input_p[idx_c, :] = np.mean(np.array(P_inp_p.input_ampa), axis=0)[::compress_step]
 
         # Rough plot to get a feeling of the behavior (expected is a spontaneous event and an induced SWR in
         # correspondence of the yellow area)
         ax = subplot(4, 3, 1 + idx_c)
         plt.plot(t_array[idx_c, :], p_array[idx_c, :], '#ef3b53', label='P', lw=2.5)
-        ylim(-5, np.max(p_array) + 2)
-        yticks(np.arange(0, np.max(p_array), 50))
         ix = np.linspace(warm_up_time / ms, (warm_up_time / ms + time_with_curr / ms))
         iy = np.linspace(10000, 10000)
         verts = [(warm_up_time / ms, 0)] + list(zip(ix, iy)) + [
@@ -426,8 +429,6 @@ def save_sim_all_current_for_fig(filename, sigma_P=400*pA, sigma_B=200*pA, sigma
 
         ax = subplot(4, 3, 4 + idx_c)
         plt.plot(t_array[idx_c, :], b_array[idx_c, :], '#3c3fef', label='B', lw=2.5)
-        ylim(-5, np.max(b_array) + 2)
-        yticks(np.arange(0, np.max(b_array), 50))
         ix = np.linspace(warm_up_time / ms, (warm_up_time / ms + time_with_curr / ms))
         iy = np.linspace(10000, 10000)
         verts = [(warm_up_time / ms, 0)] + list(zip(ix, iy)) + [
@@ -437,8 +438,6 @@ def save_sim_all_current_for_fig(filename, sigma_P=400*pA, sigma_B=200*pA, sigma
 
         ax = subplot(4, 3, 7 + idx_c)
         plt.plot(t_array[idx_c, :], a_array[idx_c, :], '#0a9045', label='A', lw=2.5)
-        ylim(-5, np.max(a_array) + 2)
-        yticks(np.arange(0, np.max(a_array), 50))
         ix = np.linspace(warm_up_time / ms, (warm_up_time / ms + time_with_curr / ms))
         iy = np.linspace(10000, 10000)
         verts = [(warm_up_time / ms, 0)] + list(zip(ix, iy)) + [
@@ -472,7 +471,8 @@ def save_sim_all_current_for_fig(filename, sigma_P=400*pA, sigma_B=200*pA, sigma
                    'sigma_B': sigma_B / pA,
                    'sigma_A': sigma_A / pA,
                    'mean_B_input_p': mean_inh_input_b / pA,
-
+                   'mean_A_input_p': mean_inh_input_a / pA,
+                   'mean_P_input_p': mean_exc_input_p / pA,
                    }
     filename_to_save = os.path.join(path_folder, filename + '_sim_fig9_fraction_' + str(fraction_stim) + '.npz')
     np.savez_compressed(filename_to_save, **dic_to_save)
