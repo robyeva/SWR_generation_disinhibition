@@ -1,5 +1,5 @@
 # SWR_generation_disinhibition
-Code to reproduce figures of the manuscript 'Generation of sharp wave-ripple events by disinhibition' by Evangelista, Cano, Cooper, Maier, Schmitz, and Kempter (2020).
+Code to reproduce figures of the manuscript 'Generation of sharp wave-ripple events by disinhibition' by Evangelista, Cano, Cooper, Maier, Schmitz, and Kempter (2020), JNeuroscience, https://doi.org/10.1523/JNEUROSCI.2174-19.2020.
 
 ## Content
 
